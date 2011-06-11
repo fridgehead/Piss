@@ -1,8 +1,10 @@
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.JPanel;
 
-import wiiremotej.WiiRemote;
+
 
 
 /*
@@ -12,23 +14,26 @@ public class ThreadPanel extends JPanel{
 	
 	GameThread currentThread;
 	UpdateThread updater;
-	WiiRemote remote;
+
 
 	
 	public ThreadPanel(GameThread startThread){
 		currentThread = startThread;
 		updater = new UpdateThread(this);
 		updater.start();
+		currentThread.start();
+		
+	}
+	
+	public void changeThread(GameThread nextThread){
+		currentThread.stop();
+		currentThread = nextThread;
+		currentThread.start();
 	}
 	
 	public void stop(){
 		System.out.println("stopped jpanel");
-		remote.disconnect();
 		
-	}
-	
-	public void setRemote(WiiRemote in){
-		remote = in;
 	}
 	
 	public void updateState(){
@@ -42,5 +47,7 @@ public class ThreadPanel extends JPanel{
 		g.drawImage(currentThread.getBuffer(), 0,0, null);
 		
 	}
+
+	
 
 }

@@ -7,19 +7,20 @@ public abstract class GameThread{
 		  boolean isRunning = false;
 		  BufferedImage buffer;
 		  Graphics bufferGraphics;
-		  ThreadPanel parent;
+		  Skeleton parent;
 		  SoundManager soundManager;
+		  InputEngine inputEngine;
 		  
-		  public GameThread(ThreadPanel parent){
+		  public GameThread(Skeleton parent){
 			  buffer = new BufferedImage(800,600, BufferedImage.TYPE_INT_ARGB);
 			  bufferGraphics = buffer.getGraphics();
 			  this.parent = parent;
-		  }
-
-		  public void setSoundManager(SoundManager s){
-			  soundManager = s;
+			  inputEngine = parent.inputEngine;
+			  soundManager = parent.soundManager;
+			  
 		  }
 		  
+		 
 		  //called whenever FPS is ready, repaints to buffer
 		  public void repaint(){}
 		  public BufferedImage getBuffer(){
@@ -39,6 +40,10 @@ public abstract class GameThread{
 			  isRunning = false;
 		  }
 
+		  public void handleInputEvent(int evt){
+			  
+		  }
+		  
 }
 
 
