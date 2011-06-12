@@ -27,7 +27,10 @@ public abstract class GameThread{
 			  return buffer;
 		  }
 		  //called periodically
-		  public void updateState(){}
+		  public void updateState(){
+			  soundManager.think();
+			  
+		  }
 
 		  /*public void handleInputEvent(int code){
 		  }*/

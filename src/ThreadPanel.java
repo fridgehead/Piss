@@ -21,7 +21,7 @@ public class ThreadPanel extends JPanel{
 		currentThread = startThread;
 		updater = new UpdateThread(this);
 		updater.start();
-		currentThread.start();
+		//currentThread.start();
 		
 	}
 	

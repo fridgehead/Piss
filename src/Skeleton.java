@@ -16,7 +16,10 @@ public class Skeleton extends JFrame implements KeyListener {
 	SoundManager soundManager;
 	
     public Skeleton()  {
-    	soundManager = new SoundManager();        
+    	System.out.println("starting.....");
+    	
+    	soundManager = new SoundManager(); 
+    	
         addKeyListener(this);
         inputEngine = new InputEngine();
     	
@@ -61,7 +64,7 @@ public class Skeleton extends JFrame implements KeyListener {
 
 	public void keyPressed(KeyEvent e) {
 		inputEngine.keyPress(e.getKeyCode());
-		p.changeThread(mainThread);
+		//p.changeThread(mainThread);
 		
 	}
 
