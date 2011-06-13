@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 public abstract class GameThread{
 
 		  boolean isRunning = false;
+		  boolean isReady = false;
 		  BufferedImage buffer;
 		  Graphics bufferGraphics;
 		  Skeleton parent;

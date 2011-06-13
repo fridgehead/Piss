@@ -10,7 +10,8 @@ public class InputEngine{
   public static final int KEY_BUTTONB = 32;
   public static final int KEY_START = 64;
   public static final int KEY_COIN = 128;
-
+  public static final int KEY_ESC = 256;
+  
   int keyMask = 0;
 
   private ArrayList<GameThread> listeners = new ArrayList(5);
@@ -56,7 +57,11 @@ public class InputEngine{
     case(32):	//START
     	keyMask |= KEY_START;
     	break;
+    case(27):
+    	sendEvent(KEY_ESC);
+    	break;
     }
+    
     
   }
 
@@ -76,15 +81,19 @@ public class InputEngine{
 	    	break;
 	    case(65):	//A
 	    	keyMask &= ~KEY_BUTTONA;
+	    	sendEvent(KEY_BUTTONA);
 	    	break;
 	    case(83):	//B
 	    	keyMask &= ~KEY_BUTTONB;
+	    	sendEvent(KEY_BUTTONB);
 	    	break;
 	    case(49):	//COIN
 	    	keyMask &= ~KEY_COIN;
+	    	sendEvent(KEY_COIN);
 	    	break;
 	    case(32):	//START
 	    	keyMask &= ~KEY_START;
+	    	sendEvent(KEY_START);
 	    	break;
 	    }
   }

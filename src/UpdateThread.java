@@ -2,31 +2,41 @@
 public class UpdateThread extends Thread{
 
 	private long tickTime = 0;
-	private int updateTicks = 41;
+	private long updateTicks = 41;
 
 	ThreadPanel target;
-	boolean isRunning = false;
+	private boolean isRunning = false;
+	private Object lock = new Object();
 
 	public UpdateThread(ThreadPanel p){
 		target = p;
-
 	}
+	
 	public void start(){
+		isRunning = true;
+
 		super.start();
 		System.out.println("Started updater..");
-		isRunning = true;
 		tickTime = System.currentTimeMillis();
 	}
 
+	public void end(){
+		isRunning = false;
+	}
 
 	public void run(){			
-		System.out.print(".");
-
 		while(isRunning){
+			//System.out.println("x");
+
 			if(tickTime + updateTicks < System.currentTimeMillis()){
-				target.updateState();
-				target.repaint();			
+				//synchronized(lock){
+					target.updateState();
+					target.repaint();
+				//}
+				tickTime = System.currentTimeMillis();
+
 			}
 		}
 	}
+
 }

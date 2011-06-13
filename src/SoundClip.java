@@ -5,7 +5,8 @@ import javax.sound.sampled.Clip;
 public enum SoundClip {
 	LIGHTNING("lightning"),
 	SONIC("sonic"),
-	RAINBGM("rainbgm");
+	RAINBGM("rainbgm"),
+	COININSERT("coininsert");
 	
 	
 

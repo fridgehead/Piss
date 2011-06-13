@@ -15,6 +15,9 @@ public class Skeleton extends JFrame implements KeyListener {
 	InputEngine inputEngine;
 	SoundManager soundManager;
 	
+	public int credits = 0;
+	public int lives = 0;
+	
     public Skeleton()  {
     	System.out.println("starting.....");
     	
@@ -24,7 +27,11 @@ public class Skeleton extends JFrame implements KeyListener {
         inputEngine = new InputEngine();
     	
     	titleThread = new TitleThread(this);
-    	mainThread = new MainGameThread(this);
+    	while(titleThread.isReady == false){
+    		System.out.println("Waiting for titlethread");
+    	}
+    	
+    	//mainThread = new MainGameThread(this);
     	
     	
     	
@@ -43,11 +50,24 @@ public class Skeleton extends JFrame implements KeyListener {
         //spawn off a gamestate thread
         //start it
         //gamestate responsible for IO passing, 
+        p.start();
         titleThread.start();
+        
         
     }
     
+    public void insertCoin(){
+    	credits++;
+    	lives = credits * 3;
+    	System.out.println("Coins: " + credits);
+    	
+    }
     
+    public void quit(){
+    	soundManager.stop();
+    	p.stop();
+    	System.exit(0);
+    }
     
     public static void main(String[] args) {
         new Skeleton();

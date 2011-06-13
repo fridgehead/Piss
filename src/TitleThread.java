@@ -41,8 +41,8 @@ public class TitleThread extends GameThread {
 		} catch (IOException e) {
 			System.out.println("fucked");
 		}
-		
-
+		inputEngine.addListener(this);
+		isReady = true;
 		
 	}
 	public void start(){
@@ -57,8 +57,9 @@ public class TitleThread extends GameThread {
 
 	public void updateState(){	
 		super.updateState(); // needed for sound manager to trigger
-		if(inputEngine.getKeyMask() != 0){
-			System.out.println("key: " + inputEngine.getKeyMask());
+		int keyMask = inputEngine.getKeyMask();
+		if(keyMask != 0){
+			
 			
 		}
 		
@@ -85,6 +86,15 @@ public class TitleThread extends GameThread {
 		} 
 		
 		
+	}
+	
+	public void handleInputEvent(int evt){
+		if(evt == InputEngine.KEY_COIN){
+			parent.insertCoin();
+			soundManager.playSound(SoundClip.COININSERT);
+		} else if (evt == InputEngine.KEY_ESC){
+			parent.quit();
+		}
 	}
 	
 	public void repaint()

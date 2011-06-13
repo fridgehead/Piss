@@ -118,6 +118,14 @@ public class SoundManager {
 	
 	}
 	
+	public void stop(){
+		for (int i = 0; i < clips.size(); i++){
+			SoundClip a = clips.get(i);
+			a.clip.close();
+			
+		}
+	}
+	
 	public void think(){
 		//look in the sound queue for things to play
 		for(int i = 0; i < queue.size(); i++){
