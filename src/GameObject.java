@@ -4,6 +4,11 @@ import java.awt.image.BufferedImage;
 
 
 public abstract class GameObject {
+	
+	public static final int DIRECTION_LEFT = 0;
+	public static final int DIRECTION_RIGHT = 1;
+	
+	
 	Sprite sprite;
 	Point worldPosition;
 	Point boundingBox;
@@ -13,7 +18,10 @@ public abstract class GameObject {
 	long lastFrameTime;
 	public boolean isActive = false;
 	BufferedImage thisFrame;
-
+	boolean flipVertical = false;
+	boolean flipHorizontal = false;
+	
+	
 	public GameObject(int wx, int wy, Sprite s){
 		lastFrameTime = 0;
 		currentFrame = 0;
@@ -23,6 +31,7 @@ public abstract class GameObject {
 	}
 
 	public void setAnimation(int id){
+		if(id == currentAnimation){ return; }
 		if(id > sprite.numAnims || id < 0){
 			id = 0;
 
@@ -35,6 +44,14 @@ public abstract class GameObject {
 		int w = sprite.size.x;
 		int h = sprite.size.y;
 		thisFrame = sprite.imageData.getSubimage(x, y, w, h);
+	}
+	
+	public void setDirection(int direction){
+		if (direction == DIRECTION_LEFT){
+			flipHorizontal = true;
+		} else if (direction == DIRECTION_RIGHT){
+			flipHorizontal = false;
+		}
 	}
 
 	/*
@@ -54,8 +71,10 @@ public abstract class GameObject {
 					int y = currentAnimation * sprite.size.y;
 					int w = sprite.size.x;
 					int h = sprite.size.y;
+					
 					thisFrame = sprite.imageData.getSubimage(x, y, w, h);
-
+					
+					
 				}
 			}
 
@@ -64,6 +83,12 @@ public abstract class GameObject {
 	/*
 	 * Draw the sprite at worldpos
 	 */
-	public abstract void draw(Graphics g);
+	public void draw(Graphics g){
+		if(flipHorizontal == false){
+			g.drawImage(thisFrame,worldPosition.x, worldPosition.y, null);
+		} else {
+			g.drawImage(thisFrame,worldPosition.x + thisFrame.getWidth(), worldPosition.y, thisFrame.getWidth() * -1,thisFrame.getHeight(), null);
+		}
+	}
 
 }

@@ -30,10 +30,7 @@ public class MainGameThread extends GameThread {
 		}
 		g = new GameObject(100,100,parent.spriteBank.getSpriteByName("Player")) {
 			
-			public void draw(Graphics g){
-				g.drawImage(thisFrame,worldPosition.x, worldPosition.y, null);
-				
-			}
+			
 			
 		};
 		g.isActive = true;
@@ -67,6 +64,15 @@ public class MainGameThread extends GameThread {
 
 	public void updateState(){	
 		super.updateState(); // needed for sound manager to trigger
+		
+		int keyState = inputEngine.getKeyMask();
+		if((keyState & InputEngine.KEY_RIGHT ) > 0){
+			g.worldPosition.x += 5;
+			g.setDirection(GameObject.DIRECTION_RIGHT);
+		} else if ((keyState & InputEngine.KEY_LEFT )> 0){
+			g.worldPosition.x -= 5;
+			g.setDirection(GameObject.DIRECTION_LEFT);
+		}
 
 		//update rain pos
 		rainX += -4;
