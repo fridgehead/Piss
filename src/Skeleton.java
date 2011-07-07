@@ -15,7 +15,7 @@ public class Skeleton extends JFrame implements KeyListener {
 	PostTitleThread postTitleThread;
 	InputEngine inputEngine;
 	SoundManager soundManager;
-	
+	SpriteBank spriteBank;
 	public int credits = 0;
 	public int lives = 0;
 	
@@ -29,7 +29,9 @@ public class Skeleton extends JFrame implements KeyListener {
 	
     public Skeleton()  {
     	System.out.println("starting.....");
-    	
+    	spriteBank = new SpriteBank();
+        int c = spriteBank.loadSprites("test.yaml");
+        System.out.println("loaded " + c + " Sprites");
     	soundManager = new SoundManager(); 
     	
         addKeyListener(this);

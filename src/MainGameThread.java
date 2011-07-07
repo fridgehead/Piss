@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -14,7 +15,7 @@ public class MainGameThread extends GameThread {
 	private BufferedImage img,rainTileImage;
 	private int rainX = 0, rainY = 0;
 
-
+	GameObject g;
 
 	public MainGameThread(Skeleton parent){
 		super(parent);
@@ -22,12 +23,20 @@ public class MainGameThread extends GameThread {
 		try {
 			img = ImageIO.read(new File("img/main.png"));
 			rainTileImage = ImageIO.read(new File("img/rainTile.png"));
-
+			
 
 		} catch (IOException e) {
 			System.out.println("fucked");
 		}
-
+		g = new GameObject(100,100,parent.spriteBank.getSpriteByName("Player")) {
+			
+			public void draw(Graphics g){
+				g.drawImage(thisFrame,worldPosition.x, worldPosition.y, null);
+				
+			}
+			
+		};
+		g.isActive = true;
 
 		//soundManager.playSound(SoundClip.SONIC);
 
@@ -50,7 +59,9 @@ public class MainGameThread extends GameThread {
 				soundManager.playSound(SoundClip.COININSERT);
 			} else if (evt == InputEngine.KEY_ESC){
 				parent.quit();
-			} 
+			} else {
+				g.setAnimation(2);
+			}
 		}
 	}
 
@@ -62,6 +73,7 @@ public class MainGameThread extends GameThread {
 		rainX %= 32;
 		rainY += 9;
 		rainY %= 32;
+		g.think();
 
 	}
 
@@ -71,8 +83,9 @@ public class MainGameThread extends GameThread {
 			//System.out.println("thread draw");
 			Graphics2D g2 = (Graphics2D) bufferGraphics;
 			g2.drawImage(img,0,0,800,600, null);
-			//System.out.println("thread draw");
-
+			
+			
+			g.draw(bufferGraphics);
 
 
 			//draw the rain pattern

@@ -109,6 +109,7 @@ public class SoundManager {
 		} 
 		if(snd != null){
 			bgmLoop = snd.clip;
+			bgmLoop.setFramePosition(0);
 			bgmLoop.loop(Clip.LOOP_CONTINUOUSLY);
 		} else {
 			bgmLoop.stop();

@@ -1,0 +1,29 @@
+name: CoinImage
+image: insertCoin.png
+animations: 1
+frameWidth: 128
+frameHeight: 32
+Animations:
+   - id: standard
+     speed: 100
+     frames: 1
+   
+---
+name: Player
+image: player.png
+animations: 4
+frameWidth: 33
+frameHeight: 54
+Animations:
+   - id: idle
+     speed: 60
+     frames: 3
+   - id: walk
+     speed: 200
+     frames: 11
+   - id: run
+     speed: -1
+     frames: 10
+   - id: eat
+     speed: 60
+     frames: 7

@@ -16,7 +16,7 @@ public class TitleThread extends GameThread {
 	private BufferedImage textImage;
 	private BufferedImage lightningImage;
 	private BufferedImage rainTileImage;
-	private BufferedImage coinImage;
+	private Sprite coinImage;
 	private BufferedImage startImage;
 
 	private long lastLightningTime = 0;
@@ -38,7 +38,7 @@ public class TitleThread extends GameThread {
 			lightningImage = ImageIO.read(new File("img/lightning.png"));
 			rainTileImage = ImageIO.read(new File("img/rainTile.png"));
 
-			coinImage = ImageIO.read(new File("img/insertCoin.png"));
+			coinImage = parent.spriteBank.getSpriteByName("CoinImage");
 			startImage = ImageIO.read(new File("img/pressStart.png"));
 
 
@@ -94,7 +94,7 @@ public class TitleThread extends GameThread {
 			coinDisplay = !coinDisplay;
 		} 
 
-
+		
 	}
 
 	public void handleInputEvent(int evt){
@@ -150,13 +150,13 @@ public class TitleThread extends GameThread {
 
 			if(coinDisplay ){
 				if(parent.credits == 0){
-					g2.drawImage(coinImage, 280, 480, coinImage.getWidth() * 4, coinImage.getHeight() * 4, null);
+					g2.drawImage(coinImage.imageData, 280, 480, coinImage.imageData.getWidth() * 4, coinImage.imageData.getHeight() * 4, null);
 				} else {
 					g2.drawImage(startImage, 280, 480, startImage.getWidth() * 4, startImage.getHeight() * 4, null);
 				}
 			}
 
-
+			
 		}
 	}
 
