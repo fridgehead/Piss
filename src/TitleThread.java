@@ -59,6 +59,10 @@ public class TitleThread extends GameThread {
 		soundManager.setBgm(SoundClip.RAINBGM);
 	}
 
+	public void stop(){
+		super.stop();
+		
+	}
 
 	public void updateState(){	
 		super.updateState(); // needed for sound manager to trigger
