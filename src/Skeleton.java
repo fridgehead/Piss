@@ -12,11 +12,20 @@ public class Skeleton extends JFrame implements KeyListener {
 	ThreadPanel p;
 	TitleThread titleThread;
 	MainGameThread mainThread;
+	PostTitleThread postTitleThread;
 	InputEngine inputEngine;
 	SoundManager soundManager;
 	
 	public int credits = 0;
 	public int lives = 0;
+	
+	
+	public static final int MODE_ATTRACT = 0;
+	public static final int MODE_AFTERTITLE = 1;
+	public static final int MODE_LEVEL0 = 2;
+	
+	private int state = 0;
+	
 	
     public Skeleton()  {
     	System.out.println("starting.....");
@@ -27,9 +36,8 @@ public class Skeleton extends JFrame implements KeyListener {
         inputEngine = new InputEngine();
     	
     	titleThread = new TitleThread(this);
-    	while(titleThread.isReady == false){
-    		System.out.println("Waiting for titlethread");
-    	}
+    	mainThread = new MainGameThread(this);
+    	postTitleThread = new PostTitleThread(this);
     	
     	//mainThread = new MainGameThread(this);
     	
@@ -54,6 +62,19 @@ public class Skeleton extends JFrame implements KeyListener {
         titleThread.start();
         
         
+    }
+    
+    public void nextState(){
+    	if(state == MODE_ATTRACT){
+    		System.out.println("setting to post title");
+    		p.changeThread(postTitleThread);
+    		state = MODE_AFTERTITLE;
+    	} else if (state == MODE_AFTERTITLE){
+    		System.out.println("setting to level 0");
+    		p.changeThread(mainThread);
+    		state = MODE_LEVEL0;
+    		
+    	}
     }
     
     public void insertCoin(){

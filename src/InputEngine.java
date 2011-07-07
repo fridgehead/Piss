@@ -28,6 +28,10 @@ public class InputEngine{
   public void addListener(GameThread gt){
     listeners.add(gt);
   }
+  
+  public void removeListener(GameThread gt){
+	  listeners.remove(gt);
+  }
 
   public void keyPress(int kCode){
     System.out.println(kCode);

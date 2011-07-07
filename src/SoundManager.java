@@ -106,9 +106,14 @@ public class SoundManager {
 	public void setBgm(SoundClip snd){
 		if(bgmLoop != null){
 			bgmLoop.stop();			
+		} 
+		if(snd != null){
+			bgmLoop = snd.clip;
+			bgmLoop.loop(Clip.LOOP_CONTINUOUSLY);
+		} else {
+			bgmLoop.stop();
+			
 		}
-		bgmLoop = snd.clip;
-		bgmLoop.loop(Clip.LOOP_CONTINUOUSLY);
 		
 	}
 	

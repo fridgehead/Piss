@@ -59,8 +59,7 @@ int x= 0;
 		super.paint(g);
 		
 		currentThread.repaint();
-		x++;
-		g.drawRect(0,0,100 + x,100);
+		
 		
 		g.drawImage(currentThread.getBuffer(), 0,0, null);
 		

@@ -38,10 +38,14 @@ public abstract class GameThread{
 
 		  public void start(){
 			  isRunning = true;
+				inputEngine.addListener(this);
+
 			  
 		  }
 		  public void stop(){
 			  isRunning = false;
+				inputEngine.removeListener(this);
+
 		  }
 
 		  public void handleInputEvent(int evt){
