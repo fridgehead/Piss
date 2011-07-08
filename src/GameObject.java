@@ -83,11 +83,13 @@ public abstract class GameObject {
 	/*
 	 * Draw the sprite at worldpos
 	 */
-	public void draw(Graphics g){
+	public void draw(Graphics g, Camera cam){
+		Point screenPos = cam.toScreenPosition(worldPosition);
+		
 		if(flipHorizontal == false){
-			g.drawImage(thisFrame,worldPosition.x, worldPosition.y, null);
+			g.drawImage(thisFrame,screenPos.x, screenPos.y, null);
 		} else {
-			g.drawImage(thisFrame,worldPosition.x + thisFrame.getWidth(), worldPosition.y, thisFrame.getWidth() * -1,thisFrame.getHeight(), null);
+			g.drawImage(thisFrame,screenPos.x + thisFrame.getWidth(), screenPos.y, thisFrame.getWidth() * -1,thisFrame.getHeight(), null);
 		}
 	}
 

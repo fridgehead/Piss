@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -28,7 +29,7 @@ public class MainGameThread extends GameThread {
 		} catch (IOException e) {
 			System.out.println("fucked");
 		}
-		g = new GameObject(100,100,parent.spriteBank.getSpriteByName("Player")) {
+		g = new GameObject(0,0,parent.spriteBank.getSpriteByName("Player")) {
 			
 			
 			
@@ -67,10 +68,10 @@ public class MainGameThread extends GameThread {
 		
 		int keyState = inputEngine.getKeyMask();
 		if((keyState & InputEngine.KEY_RIGHT ) > 0){
-			g.worldPosition.x += 5;
+			camera.position.x += 5;
 			g.setDirection(GameObject.DIRECTION_RIGHT);
 		} else if ((keyState & InputEngine.KEY_LEFT )> 0){
-			g.worldPosition.x -= 5;
+			camera.position.x -= 5;
 			g.setDirection(GameObject.DIRECTION_LEFT);
 		}
 
@@ -88,10 +89,14 @@ public class MainGameThread extends GameThread {
 		if(isRunning){
 			//System.out.println("thread draw");
 			Graphics2D g2 = (Graphics2D) bufferGraphics;
-			g2.drawImage(img,0,0,800,600, null);
+			g2.setColor(new Color(0,0,0));
+			g2.clearRect(0, 0, 800, 600);
+			Point bgPos = camera.toScreenPosition(new Point(0,0));
+			System.out.println(bgPos);
+			g2.drawImage(img,bgPos.x,bgPos.y,800,600, null);
 			
 			
-			g.draw(bufferGraphics);
+			g.draw(bufferGraphics, camera);
 
 
 			//draw the rain pattern

@@ -1,4 +1,5 @@
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 
 
@@ -11,6 +12,7 @@ public abstract class GameThread{
 		  Skeleton parent;
 		  SoundManager soundManager;
 		  InputEngine inputEngine;
+		  Camera camera;
 		  
 		  public GameThread(Skeleton parent){
 			  buffer = new BufferedImage(800,600, BufferedImage.TYPE_INT_ARGB);
@@ -18,6 +20,8 @@ public abstract class GameThread{
 			  this.parent = parent;
 			  inputEngine = parent.inputEngine;
 			  soundManager = parent.soundManager;
+			  camera = new Camera(new Point(0,0), new Point(Skeleton.WINDOW_WIDTH, Skeleton.WINDOW_HEIGHT));
+			  
 			  
 		  }
 		  

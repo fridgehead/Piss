@@ -26,6 +26,9 @@ public class Skeleton extends JFrame implements KeyListener {
 	
 	private int state = 0;
 	
+	public static final int WINDOW_WIDTH = 800;
+	public static final int WINDOW_HEIGHT = 600;
+	
 	
     public Skeleton()  {
     	System.out.println("starting.....");
@@ -52,7 +55,7 @@ public class Skeleton extends JFrame implements KeyListener {
         
         setTitle("Test");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(800, 600);
+        setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         setLocationRelativeTo(null);
         setVisible(true);
         setResizable(false);
