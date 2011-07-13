@@ -27,16 +27,3 @@ Animations:
    - id: eat
      speed: 60
      frames: 7
-     
----
-
-name: FixedFont
-image: fixedFont.png
-animations: 1
-frameWidth: 32
-frameHeight: 32
-Animations:
-   - id: idle
-     speed: -1
-     frames: 36
-   

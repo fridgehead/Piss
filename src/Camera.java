@@ -32,7 +32,7 @@ public class Camera {
 	//convert a world pos to screen pos
 	public Point toScreenPosition(Point p){
 		Point ret = new Point(0,0);
-		ret.x = ( position.x ) - p.x;
+		ret.x =-( ( position.x ) - p.x);
 		ret.y = ( position.y ) - p.y;
 		return ret;
 	}

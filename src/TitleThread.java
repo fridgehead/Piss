@@ -18,6 +18,8 @@ public class TitleThread extends GameThread {
 	private BufferedImage rainTileImage;
 	private Sprite coinImage;
 	private BufferedImage startImage;
+	
+	private Sprite testSprite;
 
 	private long lastLightningTime = 0;
 	private int randomLightning;
@@ -41,7 +43,7 @@ public class TitleThread extends GameThread {
 			coinImage = parent.spriteBank.getSpriteByName("CoinImage");
 			startImage = ImageIO.read(new File("img/pressStart.png"));
 
-
+			testSprite = parent.spriteBank.getSpriteByName("FixedFont");
 		} catch (IOException e) {
 			System.out.println("fucked");
 		}
@@ -156,6 +158,7 @@ public class TitleThread extends GameThread {
 				}
 			}
 
+			g2.drawImage(testSprite.imageData, 280, 480, testSprite.imageData.getWidth() * 4, testSprite.imageData.getHeight() * 4, null);
 			
 		}
 	}
