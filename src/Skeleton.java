@@ -16,6 +16,7 @@ public class Skeleton extends JFrame implements KeyListener {
 	InputEngine inputEngine;
 	SoundManager soundManager;
 	SpriteBank spriteBank;
+	FixedFontImage fixedFont;
 	public int credits = 0;
 	public int lives = 0;
 	
@@ -40,9 +41,13 @@ public class Skeleton extends JFrame implements KeyListener {
         addKeyListener(this);
         inputEngine = new InputEngine();
     	
+        fixedFont = new FixedFontImage(spriteBank.getSpriteByName("FixedFont"));
+        
     	titleThread = new TitleThread(this);
     	mainThread = new MainGameThread(this);
     	postTitleThread = new PostTitleThread(this);
+    	
+    	
     	
     	//mainThread = new MainGameThread(this);
     	

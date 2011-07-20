@@ -19,7 +19,7 @@ public class TitleThread extends GameThread {
 	private Sprite coinImage;
 	private BufferedImage startImage;
 	
-	private Sprite testSprite;
+	private BufferedImage coinAmount;
 
 	private long lastLightningTime = 0;
 	private int randomLightning;
@@ -27,7 +27,7 @@ public class TitleThread extends GameThread {
 	private int lightningFlip = -1;
 	private long lastBlinkTime = 0;
 	private boolean coinDisplay = false;
-
+	private BufferedImage b;
 
 	private int rainX = 0, rainY = 0;
 
@@ -43,7 +43,10 @@ public class TitleThread extends GameThread {
 			coinImage = parent.spriteBank.getSpriteByName("CoinImage");
 			startImage = ImageIO.read(new File("img/pressStart.png"));
 
-			testSprite = parent.spriteBank.getSpriteByName("FixedFont");
+			coinAmount = parent.fixedFont.getImageFromString("0 credits");
+			
+			
+			
 		} catch (IOException e) {
 			System.out.println("fucked");
 		}
@@ -103,6 +106,7 @@ public class TitleThread extends GameThread {
 		if(isRunning){
 			if(evt == InputEngine.KEY_COIN){
 				parent.insertCoin();
+				coinAmount = parent.fixedFont.getImageFromString(parent.credits + " credits");
 				soundManager.playSound(SoundClip.COININSERT);
 			} else if (evt == InputEngine.KEY_ESC){
 				parent.quit();
@@ -154,12 +158,12 @@ public class TitleThread extends GameThread {
 				if(parent.credits == 0){
 					g2.drawImage(coinImage.imageData, 280, 480, coinImage.imageData.getWidth() * 4, coinImage.imageData.getHeight() * 4, null);
 				} else {
-					g2.drawImage(startImage, 280, 480, startImage.getWidth() * 4, startImage.getHeight() * 4, null);
+					g2.drawImage(startImage, 280, 480, startImage.getWidth() * 4 , startImage.getHeight() * 4, null);
 				}
 			}
 
-			g2.drawImage(testSprite.imageData, 280, 480, testSprite.imageData.getWidth() * 4, testSprite.imageData.getHeight() * 4, null);
-			
+			//number of credits
+			g2.drawImage(coinAmount, 20,530,null);
 		}
 	}
 

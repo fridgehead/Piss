@@ -87,9 +87,9 @@ public abstract class GameObject {
 		Point screenPos = cam.toScreenPosition(worldPosition);
 		
 		if(flipHorizontal == false){
-			g.drawImage(thisFrame,screenPos.x, screenPos.y, null);
+			g.drawImage(thisFrame,screenPos.x, screenPos.y, sprite.size.x * 4, sprite.size.y * 4, null);
 		} else {
-			g.drawImage(thisFrame,screenPos.x + thisFrame.getWidth(), screenPos.y, thisFrame.getWidth() * -1,thisFrame.getHeight(), null);
+			g.drawImage(thisFrame,screenPos.x +( thisFrame.getWidth() * 4), screenPos.y, thisFrame.getWidth() * -4,thisFrame.getHeight() * 4, null);
 		}
 	}
 

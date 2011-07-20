@@ -8,12 +8,26 @@ public class Camera {
 	
 	public Point position;
 	public int viewWidth, viewHeight;
+	public boolean following = false;
+	private GameObject follow;
 	
 	public Camera (Point camPos, Point viewSize){
 		position = camPos;
 		viewWidth = viewSize.x;
 		viewHeight = viewSize.y;
 		
+	}
+	
+	public void followObject(GameObject obj){
+		if(obj != null){
+			follow = obj;
+			following = true;
+			
+		} else {
+			follow = null;
+			following = false;
+			
+		}
 	}
 	
 	public boolean isInView(Point pos){

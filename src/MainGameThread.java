@@ -13,28 +13,29 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 public class MainGameThread extends GameThread {
 
 
-	private BufferedImage img,rainTileImage;
+	private BufferedImage bgimg,rainTileImage;
 	private int rainX = 0, rainY = 0;
 
-	GameObject g;
+	PlayerObject player;
+	
 
 	public MainGameThread(Skeleton parent){
 		super(parent);
 
 		try {
-			img = ImageIO.read(new File("img/main.png"));
+			bgimg = ImageIO.read(new File("img/main.png"));
 			rainTileImage = ImageIO.read(new File("img/rainTile.png"));
 			
 
 		} catch (IOException e) {
 			System.out.println("fucked");
 		}
-		g = new GameObject(0,0,parent.spriteBank.getSpriteByName("Player")) {
+		player = new PlayerObject(0,-260,parent.spriteBank.getSpriteByName("Player")) {
 			
 			
 			
 		};
-		g.isActive = true;
+		player.isActive = true;
 
 		//soundManager.playSound(SoundClip.SONIC);
 
@@ -58,7 +59,7 @@ public class MainGameThread extends GameThread {
 			} else if (evt == InputEngine.KEY_ESC){
 				parent.quit();
 			} else {
-				g.setAnimation(2);
+				//player.setAnimation(2);
 			}
 		}
 	}
@@ -68,11 +69,11 @@ public class MainGameThread extends GameThread {
 		
 		int keyState = inputEngine.getKeyMask();
 		if((keyState & InputEngine.KEY_RIGHT ) > 0){
-			camera.position.x += 5;
-			g.setDirection(GameObject.DIRECTION_RIGHT);
+			player.move(8);
 		} else if ((keyState & InputEngine.KEY_LEFT )> 0){
-			camera.position.x -= 5;
-			g.setDirection(GameObject.DIRECTION_LEFT);
+			player.move(-8);
+		} else {
+			player.move(0);
 		}
 
 		//update rain pos
@@ -80,7 +81,7 @@ public class MainGameThread extends GameThread {
 		rainX %= 32;
 		rainY += 9;
 		rainY %= 32;
-		g.think();
+		player.think();
 
 	}
 
@@ -92,11 +93,11 @@ public class MainGameThread extends GameThread {
 			g2.setColor(new Color(0,0,0));
 			g2.clearRect(0, 0, 800, 600);
 			Point bgPos = camera.toScreenPosition(new Point(0,0));
-			System.out.println(bgPos);
-			g2.drawImage(img,bgPos.x,bgPos.y,800,600, null);
+			
+			g2.drawImage(bgimg,bgPos.x,bgPos.y,800,600, null);
 			
 			
-			g.draw(bufferGraphics, camera);
+			player.draw(bufferGraphics, camera);
 
 
 			//draw the rain pattern

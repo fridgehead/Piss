@@ -19,7 +19,7 @@ Animations:
      speed: 60
      frames: 3
    - id: walk
-     speed: 200
+     speed: 100
      frames: 11
    - id: run
      speed: -1
@@ -31,10 +31,10 @@ Animations:
 ---
 
 name: FixedFont
-image: fixedFont.png
+image: fixedFont2.png
 animations: 1
-frameWidth: 32
-frameHeight: 32
+frameWidth: 16
+frameHeight: 16
 Animations:
    - id: idle
      speed: -1
