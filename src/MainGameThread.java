@@ -17,7 +17,7 @@ public class MainGameThread extends GameThread {
 	private int rainX = 0, rainY = 0;
 
 	PlayerObject player;
-	QueueObject q;
+	QueueObject[] q = new QueueObject[8];
 
 	public MainGameThread(Skeleton parent){
 		super(parent);
@@ -33,8 +33,14 @@ public class MainGameThread extends GameThread {
 		player = new PlayerObject(0,-260,parent.spriteBank.getSpriteByName("Player")) ;		
 		player.isActive = true;
 		
-		q = new QueueObject(200,-260,parent.spriteBank.getSpriteByName("OldWoman"));
-		q.isActive = true;
+		for(int i = 0; i < 4; i++){
+			q[i] = new QueueObject(-600 + 150 * i,-260,parent.spriteBank.getSpriteByName("OldWoman"));
+			q[i].isActive = true;
+		}
+		for(int i = 4; i < 8; i++){
+			q[i] = new QueueObject(150 + 150 * (i - 3),-260,parent.spriteBank.getSpriteByName("OldWoman"));
+			q[i].isActive = true;
+		}
 		//soundManager.playSound(SoundClip.SONIC);
 
 	}
@@ -58,7 +64,10 @@ public class MainGameThread extends GameThread {
 			} else if (evt == InputEngine.KEY_ESC){
 				parent.quit();
 			} else {
-				q.setDestination(q.worldPosition.x + 100);
+				for(int i = 0; i < 8; i++){
+
+					q[i].setDestination(q[i].worldPosition.x + 100);
+				}
 			}
 		}
 	}
@@ -81,7 +90,10 @@ public class MainGameThread extends GameThread {
 		rainY += 9;
 		rainY %= 32;
 		player.think();
-		q.think();
+		for(int i = 0; i < 8; i++){
+
+		q[i].think();
+		}
 	}
 
 	public void repaint()
@@ -97,8 +109,10 @@ public class MainGameThread extends GameThread {
 			
 			
 			player.draw(bufferGraphics, camera);
-			q.draw(bufferGraphics, camera);
+			for(int i = 0; i < 8; i++){
 
+				q[i].draw(bufferGraphics, camera);
+			}
 			//draw the rain pattern
 
 			for(int x = 0; x < 896 / 64; x++){
