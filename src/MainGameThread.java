@@ -17,7 +17,7 @@ public class MainGameThread extends GameThread {
 	private int rainX = 0, rainY = 0;
 
 	PlayerObject player;
-	
+	QueueObject q;
 
 	public MainGameThread(Skeleton parent){
 		super(parent);
@@ -30,13 +30,11 @@ public class MainGameThread extends GameThread {
 		} catch (IOException e) {
 			System.out.println("fucked");
 		}
-		player = new PlayerObject(0,-260,parent.spriteBank.getSpriteByName("Player")) {
-			
-			
-			
-		};
+		player = new PlayerObject(0,-260,parent.spriteBank.getSpriteByName("Player")) ;		
 		player.isActive = true;
-
+		
+		q = new QueueObject(200,-260,parent.spriteBank.getSpriteByName("OldWoman"));
+		q.isActive = true;
 		//soundManager.playSound(SoundClip.SONIC);
 
 	}
@@ -56,10 +54,11 @@ public class MainGameThread extends GameThread {
 			if(evt == InputEngine.KEY_COIN){
 				parent.insertCoin();
 				soundManager.playSound(SoundClip.COININSERT);
+				
 			} else if (evt == InputEngine.KEY_ESC){
 				parent.quit();
 			} else {
-				//player.setAnimation(2);
+				q.setDestination(q.worldPosition.x + 100);
 			}
 		}
 	}
@@ -82,7 +81,7 @@ public class MainGameThread extends GameThread {
 		rainY += 9;
 		rainY %= 32;
 		player.think();
-
+		q.think();
 	}
 
 	public void repaint()
@@ -98,7 +97,7 @@ public class MainGameThread extends GameThread {
 			
 			
 			player.draw(bufferGraphics, camera);
-
+			q.draw(bufferGraphics, camera);
 
 			//draw the rain pattern
 
@@ -108,7 +107,7 @@ public class MainGameThread extends GameThread {
 
 				}
 			}
-
+			
 
 		}
 	}

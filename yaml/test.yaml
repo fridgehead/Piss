@@ -9,6 +9,22 @@ Animations:
      frames: 1
    
 ---
+
+name: OldWoman
+image: old_woman.png
+animations: 2
+frameWidth: 40
+frameHeight: 53
+Animations:
+   - id: idle
+     speed: -1
+     frames: 1
+   - id: walk
+     speed: 100
+     frames: 4
+   
+---
+
 name: Player
 image: player.png
 animations: 4
