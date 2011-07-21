@@ -11,7 +11,7 @@ public class QueueObject extends GameObject {
 	
 	public QueueObject(int wx, int wy, Sprite s) {
 		super(wx, wy, s);
-		destination = -1;
+		destination = wx;
 		setDirection(GameObject.DIRECTION_RIGHT);
 		setAnimation(0);
 		

@@ -18,14 +18,18 @@ public class MainGameThread extends GameThread {
 
 	PlayerObject player;
 	QueueObject[] q = new QueueObject[8];
+	private BufferedImage coinAmount;
+	private BufferedImage overlay;
+	
 
 	public MainGameThread(Skeleton parent){
 		super(parent);
+		
 
 		try {
 			bgimg = ImageIO.read(new File("img/main.png"));
 			rainTileImage = ImageIO.read(new File("img/rainTile.png"));
-			
+			overlay = ImageIO.read(new File("img/overlay.png"));
 
 		} catch (IOException e) {
 			System.out.println("fucked");
@@ -42,12 +46,13 @@ public class MainGameThread extends GameThread {
 			q[i].isActive = true;
 		}
 		//soundManager.playSound(SoundClip.SONIC);
-
+		
 	}
 
 	public void start(){
 		super.start();
 		soundManager.setBgm(SoundClip.RAINBGM);
+		coinAmount = parent.fixedFont.getImageFromString(parent.credits + " credits");
 	}
 
 	public void stop(){
@@ -58,8 +63,11 @@ public class MainGameThread extends GameThread {
 	public void handleInputEvent(int evt){
 		if(isRunning){
 			if(evt == InputEngine.KEY_COIN){
-				parent.insertCoin();
-				soundManager.playSound(SoundClip.COININSERT);
+				
+					parent.insertCoin();
+					coinAmount = parent.fixedFont.getImageFromString(parent.credits + " credits");
+					soundManager.playSound(SoundClip.COININSERT);
+				
 				
 			} else if (evt == InputEngine.KEY_ESC){
 				parent.quit();
@@ -74,7 +82,7 @@ public class MainGameThread extends GameThread {
 
 	public void updateState(){	
 		super.updateState(); // needed for sound manager to trigger
-		
+		camera.position.x = player.worldPosition.x - (parent.getWidth() / 2) + 100;
 		int keyState = inputEngine.getKeyMask();
 		if((keyState & InputEngine.KEY_RIGHT ) > 0){
 			player.move(8);
@@ -92,7 +100,7 @@ public class MainGameThread extends GameThread {
 		player.think();
 		for(int i = 0; i < 8; i++){
 
-		q[i].think();
+			q[i].think();
 		}
 	}
 
@@ -121,8 +129,9 @@ public class MainGameThread extends GameThread {
 
 				}
 			}
+			//g2.drawImage(overlay, 0,0,null);
+			g2.drawImage(coinAmount, 20,530,null);
 			
-
 		}
 	}
 

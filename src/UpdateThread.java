@@ -2,7 +2,7 @@
 public class UpdateThread extends Thread{
 
 	private long tickTime = 0;
-	private long updateTicks = 41;
+	private long updateTicks = 21;
 
 	ThreadPanel target;
 	private boolean isRunning = false;
@@ -27,13 +27,15 @@ public class UpdateThread extends Thread{
 	public void run(){			
 		while(isRunning){
 			//System.out.println("x");
-
 			if(tickTime + updateTicks < System.currentTimeMillis()){
+				
+
 				//synchronized(lock){
 					target.updateState();
 					target.repaint();
 				//}
 				tickTime = System.currentTimeMillis();
+				
 
 			}
 		}
