@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
  */
 public class FixedFontImage {
 	Sprite sprite;
+	public int spacing = 40;
 	public FixedFontImage(Sprite s){
 		sprite = s;
 		
@@ -13,7 +14,7 @@ public class FixedFontImage {
 	
 	public BufferedImage getImageFromString(String str){
 		String in = str.toUpperCase();
-		BufferedImage ret = new BufferedImage(str.length() * 32, 32, BufferedImage.TYPE_INT_ARGB);
+		BufferedImage ret = new BufferedImage(str.length() * (sprite.size.x + spacing), sprite.size.y, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = (Graphics2D) ret.getGraphics();
 		char[] s = in.toCharArray();
 		for(int i = 0; i < str.length(); i++){
@@ -21,16 +22,16 @@ public class FixedFontImage {
 			int val = Character.getNumericValue(s[i]);
 			int xpos = 0;
 			if(val >= 10){
-				xpos = (val - 10) * 16;
-				BufferedImage letter = sprite.imageData.getSubimage(xpos, 0, 16, 16);
+				xpos = (val - 10) * sprite.size.x;
+				BufferedImage letter = sprite.imageData.getSubimage(xpos, 0, sprite.size.x,sprite.size.y);
 				
-				g.drawImage(letter, i * 25, 0,32,32,null);
+				g.drawImage(letter, i * sprite.size.x + spacing, 0,sprite.size.x,sprite.size.y,null);
 				
 			} else if (val < 10 && val >= 0) {
-				xpos = (val + 26) * 16;
-				BufferedImage letter = sprite.imageData.getSubimage(xpos, 0, 16, 16);
+				xpos = (val + 26) * sprite.size.x;
+				BufferedImage letter = sprite.imageData.getSubimage(xpos, 0, sprite.size.x, sprite.size.y);
 				
-				g.drawImage(letter, i * 25, 0,32,32,null);
+				g.drawImage(letter, i * sprite.size.x + spacing, 0,sprite.size.x,sprite.size.y,null);
 				
 			} else {
 				

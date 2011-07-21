@@ -1,58 +1,10 @@
-name: CoinImage
-image: insertCoin.png
+name: FixedFontSmall
+image: fixedFont.png
 animations: 1
-frameWidth: 128
-frameHeight: 32
+frameWidth: 19
+frameHeight: 21
 Animations:
    - id: standard
-     speed: 100
-     frames: 1
-   
----
-
-name: OldWoman
-image: old_woman.png
-animations: 2
-frameWidth: 40
-frameHeight: 53
-Animations:
-   - id: idle
-     speed: -1
-     frames: 1
-   - id: walk
-     speed: 100
-     frames: 4
-   
----
-
-name: Player
-image: player.png
-animations: 4
-frameWidth: 33
-frameHeight: 54
-Animations:
-   - id: idle
-     speed: 60
-     frames: 3
-   - id: walk
-     speed: 100
-     frames: 11
-   - id: run
-     speed: -1
-     frames: 10
-   - id: eat
-     speed: 60
-     frames: 7
-     
----
-
-name: FixedFont
-image: fixedFont2.png
-animations: 1
-frameWidth: 16
-frameHeight: 16
-Animations:
-   - id: idle
      speed: -1
      frames: 36
    

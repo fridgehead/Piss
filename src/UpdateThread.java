@@ -1,4 +1,5 @@
 
+
 public class UpdateThread extends Thread{
 
 	private long tickTime = 0;

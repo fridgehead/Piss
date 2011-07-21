@@ -12,7 +12,7 @@ public class Skeleton extends JFrame implements KeyListener {
 	ThreadPanel p;
 	TitleThread titleThread;
 	MainGameThread mainThread;
-	PostTitleThread postTitleThread;
+	HighScoreThread highScoreThread;
 	InputEngine inputEngine;
 	SoundManager soundManager;
 	SpriteBank spriteBank;
@@ -21,9 +21,9 @@ public class Skeleton extends JFrame implements KeyListener {
 	public int lives = 0;
 	
 	
-	public static final int MODE_ATTRACT = 0;
-	public static final int MODE_AFTERTITLE = 1;
-	public static final int MODE_LEVEL0 = 2;
+	public static final int MODE_TITLE = 0;
+	public static final int MODE_HIGHSCORE = 1;
+	public static final int MODE_GAME = 2;
 	
 	private int state = 0;
 	
@@ -41,12 +41,12 @@ public class Skeleton extends JFrame implements KeyListener {
         addKeyListener(this);
         inputEngine = new InputEngine();
     	
-        fixedFont = new FixedFontImage(spriteBank.getSpriteByName("FixedFont"));
+        fixedFont = new FixedFontImage(spriteBank.getSpriteByName("FixedFontSmall"));
         
     	titleThread = new TitleThread(this);
-    	mainThread = new MainGameThread(this);
-    	postTitleThread = new PostTitleThread(this);
     	
+    	mainThread = new MainGameThread(this);
+    	highScoreThread = new HighScoreThread(this);
     	
     	
     	//mainThread = new MainGameThread(this);
@@ -75,24 +75,21 @@ public class Skeleton extends JFrame implements KeyListener {
     }
     
     public void nextState(){
-    	if(state == MODE_ATTRACT){
-    		System.out.println("setting to post title");
-    		p.changeThread(postTitleThread);
-    		state = MODE_AFTERTITLE;
-    	} else if (state == MODE_AFTERTITLE){
-    		System.out.println("setting to level 0");
-    		p.changeThread(mainThread);
-    		state = MODE_LEVEL0;
+    	if(state == MODE_TITLE){
+    		
+    		p.changeThread(highScoreThread);
+    		state = MODE_HIGHSCORE;
+    		
+    	} else if(state == MODE_HIGHSCORE){
+    		
+    		
+    		p.changeThread(titleThread);
+    		state = MODE_TITLE;
     		
     	}
     }
     
-    public void insertCoin(){
-    	credits++;
-    	lives = credits * 3;
-    	System.out.println("Coins: " + credits);
-    	
-    }
+    
     
     public void quit(){
     	soundManager.stop();
