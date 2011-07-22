@@ -95,7 +95,7 @@ public class HighScoreThread extends GameThread {
 			//big image at the top for the CHAMP
 			g2.drawImage(scores[0].faceImage, titlePos.x + 130, baseY - 160 , 256,192, null);
 			g2.drawImage(scores[0].scoreImage, titlePos.x + 230, baseY - 130, scores[0].scoreImage.getWidth() * 4, scores[0].scoreImage.getHeight() * 4, null);
-			
+
 			//draw the lower list
 			for(int i = 1; i < 10; i++){
 				g2.drawImage(scores[i].faceImage, titlePos.x + 130, baseY +  (60*i), 64,48, null);
@@ -116,7 +116,9 @@ public class HighScoreThread extends GameThread {
 		if(evt == InputEngine.KEY_ESC){
 			parent.quit();
 		} else {
-			System.out.println("START THE GAME BOY");
+
+			parent.startGame();
+
 		}
 	}
 

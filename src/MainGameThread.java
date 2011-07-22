@@ -13,12 +13,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 public class MainGameThread extends GameThread {
 
 
-	private BufferedImage bgimg,rainTileImage;
-	private int rainX = 0, rainY = 0;
-
 	PlayerObject player;
-	private BufferedImage coinAmount;
-	private BufferedImage overlay;
 	
 
 	public MainGameThread(Skeleton parent){
@@ -48,21 +43,7 @@ public class MainGameThread extends GameThread {
 
 	public void updateState(){	
 		super.updateState(); // needed for sound manager to trigger
-		camera.position.x = player.worldPosition.x - (parent.getWidth() / 2) + 100;
-		int keyState = inputEngine.getKeyMask();
-		if((keyState & InputEngine.KEY_RIGHT ) > 0){
-			player.move(8);
-		} else if ((keyState & InputEngine.KEY_LEFT )> 0){
-			player.move(-8);
-		} else {
-			player.move(0);
-		}
-
-		//update rain pos
-		rainX += -4;
-		rainX %= 32;
-		rainY += 9;
-		rainY %= 32;
+		
 		
 		
 	}
@@ -72,7 +53,7 @@ public class MainGameThread extends GameThread {
 		if(isRunning){
 			//System.out.println("thread draw");
 			Graphics2D g2 = (Graphics2D) bufferGraphics;
-			g2.setColor(new Color(0,0,0));
+			g2.setColor(new Color(250,0,0));
 			g2.clearRect(0, 0, 800, 600);
 			
 						

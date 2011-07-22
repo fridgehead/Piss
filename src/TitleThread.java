@@ -60,6 +60,8 @@ public class TitleThread extends GameThread {
 		if(isRunning){
 			if(evt == InputEngine.KEY_ESC){
 				parent.quit();
+			} else {
+				parent.startGame();
 			}
 		}
 	}
