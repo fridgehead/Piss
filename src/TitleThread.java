@@ -19,8 +19,8 @@ public class TitleThread extends GameThread {
 
 	public TitleThread(Skeleton parent){
 		super(parent);
-		titleText = parent.fixedFont.getImageFromString("PISSTEROIDS");
-		pissToStartImage = parent.fixedFont.getImageFromString("piss to start");
+		titleText = parent.fixedFont.getImageFromString("WEE WII");
+		pissToStartImage = parent.fixedFont.getImageFromString("Wee to start");
 		isReady = true;
 
 	}
@@ -49,7 +49,7 @@ public class TitleThread extends GameThread {
 			titleDisplay = !titleDisplay;
 		}
 		
-		if(timeStarted + 2000 < System.currentTimeMillis()){
+		if(timeStarted + 10000 < System.currentTimeMillis()){
 			//switch to high score
 			parent.nextState();
 		}
@@ -72,9 +72,9 @@ public class TitleThread extends GameThread {
 			g2.setColor(new Color(255,255,255));
 			g2.fillRect(0, 0, 800, 600);
 			if(titleDisplay){
-				g2.drawImage(pissToStartImage, 220, 400,null);
+				g2.drawImage(pissToStartImage, 230, 540,null);
 			}
-			g2.drawImage(titleText, -20,200, titleText.getWidth() * 3, titleText.getHeight() * 3,null);
+			g2.drawImage(titleText, -20,200, titleText.getWidth() * 4, titleText.getHeight() * 4,null);
 		}
 	}
 
