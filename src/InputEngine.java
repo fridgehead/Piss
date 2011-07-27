@@ -11,7 +11,7 @@ public class InputEngine{
 	public static final int KEY_TRACK5 = 32;
 	public static final int KEY_TRACK6 = 64;
 	public static final int KEY_ESC = 128;
-
+	public static final int KEY_NOMOREPISS = 256;
 
 
 
@@ -37,32 +37,36 @@ public class InputEngine{
 	}
 
 	public void keyPress(int kCode){
-		System.out.println(kCode);
+		//System.out.println(kCode);
 
 		switch(kCode){
-		case(37):	//left
-		keyMask |= KEY_TRACK0;
+		case(49):	//left
+			keyMask |= KEY_TRACK0;
 		break;
-		case(38):	//up
+		case(50):	//up
 			keyMask |= KEY_TRACK1;
 		break;
-		case(39):	//up
+		case(51):	//up
 			keyMask |= KEY_TRACK2;
 		break;
-		case(40):	//up
+		case(52):	//up
 			keyMask |= KEY_TRACK3;
 		break;
-		case(65):	//A
+		case(53):	//A
 			keyMask |= KEY_TRACK4;
 		break;
-		case(83):	//B
+		case(54):	//B
 			keyMask |= KEY_TRACK5;
 		break;
-		case(49):	//COIN
+		case(55):	//COIN
 			keyMask |= KEY_TRACK6;
 		break;
 		case(27):
 			sendEvent(KEY_ESC);
+			break;
+		case(32):
+			sendEvent(KEY_NOMOREPISS);
+			
 		break;
 		}
 
@@ -71,31 +75,39 @@ public class InputEngine{
 
 	public void keyRelease(int kCode){
 		switch(kCode){
-		case(37):	//left
+		case(49):	//left
 			keyMask &= ~KEY_TRACK0;
+		sendEvent(KEY_TRACK0);
+
 		break;
-		case(38):	//up
+		case(50):	//up
 			keyMask &= ~KEY_TRACK1;
+		sendEvent(KEY_TRACK1);
+
 		break;
-		case(39):	//up
+		case(51):	//up
 			keyMask &= ~KEY_TRACK2;
+		sendEvent(KEY_TRACK2);
+
 		break;
-		case(40):	//up
+		case(52):	//up
 			keyMask &= ~KEY_TRACK3;
+		sendEvent(KEY_TRACK3);
+
 		break;
-		case(65):	//A
+		case(53):	//A
 			keyMask &= ~KEY_TRACK4;
 		sendEvent(KEY_TRACK4);
 		break;
-		case(83):	//B
+		case(54):	//B
 			keyMask &= ~KEY_TRACK5;
 		sendEvent(KEY_TRACK5);
 		break;
-		case(49):	//COIN
+		case(55):	//COIN
 			keyMask &= ~KEY_TRACK6;
 		sendEvent(KEY_TRACK6);
 		break;
-		
+
 		}
 	}
 

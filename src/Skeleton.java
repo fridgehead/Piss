@@ -74,9 +74,19 @@ public class Skeleton extends JFrame implements KeyListener {
         
     }
     
+    public void finishedWithScore(int score){
+    	if(state != MODE_HIGHSCORE){
+    		highScoreThread.newScore(score);
+    		p.changeThread(highScoreThread);
+    		state = MODE_HIGHSCORE;
+    	}
+    }
+    
     public void startGame(){
-    	p.changeThread(mainThread);
-    	state = MODE_GAME;
+    	if(state != MODE_GAME){
+    		p.changeThread(mainThread);
+    		state = MODE_GAME;
+    	}
     }
     
     public void nextState(){

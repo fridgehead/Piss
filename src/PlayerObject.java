@@ -1,11 +1,22 @@
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+
 
 public class PlayerObject extends GameObject {
 	
 	int direction = 0;
+	int destinationX = 0;
+	boolean moving = false;
 
 	public PlayerObject(int wx, int wy, Sprite s) {
 		super(wx, wy, s);
 		
+	}
+	
+	//move to worldx
+	public void moveTo(int wx){
+		destinationX = wx;
+		moving = true;
 	}
 	
 	public void move(int direction){
@@ -21,9 +32,21 @@ public class PlayerObject extends GameObject {
 		}
 	}
 	
+	public void draw(Graphics b, Camera c){
+		super.draw(b, c);
+		
+	}
+	
 	public void think(){
 		super.think();
-		this.worldPosition.x += direction;
+		if(moving){
+			if(destinationX == worldPosition.x){
+				moving = false;
+			} else {
+				worldPosition.x += destinationX < worldPosition.x ? -10 : 10;
+				
+			}
+		}
 		
 	}
 

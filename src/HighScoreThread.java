@@ -4,14 +4,18 @@ import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import javax.imageio.ImageIO;
 
 
 public class HighScoreThread extends GameThread {
 
-	ScoreItem[] scores = new ScoreItem[10];
+	//ScoreItem[] scores = new ScoreItem[10];
+	ArrayList<ScoreItem> scores = new ArrayList<ScoreItem>(10);
 	String[] locations = new String[10];
 
 	Camera cam;
@@ -36,14 +40,30 @@ public class HighScoreThread extends GameThread {
 				BufferedImage t = ImageIO.read(new File("img/face1.png"));
 				t = resize(t, 64,48);
 				int s = 100 * i;
-				scores[i] = new ScoreItem(t, s);
+				scores.add(new ScoreItem(t, s));
 
 
 			}
 		} catch (Exception e){
 			e.printStackTrace();
 		}
-		Arrays.sort(scores);
+		Collections.sort(scores);
+	}
+	
+	public void newScore(int score){
+		BufferedImage t;
+		try {
+			t = ImageIO.read(new File("img/face1.png"));
+			t = resize(t, 64,48);
+			scores.add(new ScoreItem(t,score));
+			Collections.sort(scores);
+			scores.remove(scores.size() - 1);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 	}
 
 	public  BufferedImage resize(BufferedImage img, int newW, int newH) {  
@@ -93,13 +113,15 @@ public class HighScoreThread extends GameThread {
 
 			int baseY = titlePos.y + 260 ;
 			//big image at the top for the CHAMP
-			g2.drawImage(scores[0].faceImage, titlePos.x + 130, baseY - 160 , 256,192, null);
-			g2.drawImage(scores[0].scoreImage, titlePos.x + 230, baseY - 130, scores[0].scoreImage.getWidth() * 4, scores[0].scoreImage.getHeight() * 4, null);
+			ScoreItem s = scores.get(0);
+			g2.drawImage(s.faceImage, titlePos.x + 130, baseY - 160 , 256,192, null);
+			g2.drawImage(s.scoreImage, titlePos.x + 230, baseY - 130, s.scoreImage.getWidth() * 4, scores.get(0).scoreImage.getHeight() * 4, null);
 
 			//draw the lower list
 			for(int i = 1; i < 10; i++){
-				g2.drawImage(scores[i].faceImage, titlePos.x + 130, baseY +  (60*i), 64,48, null);
-				g2.drawImage(scores[i].scoreImage, titlePos.x + 230, baseY + (60*i), scores[i].scoreImage.getWidth() * 2, scores[i].scoreImage.getHeight() * 2, null);
+				s = scores.get(i);
+				g2.drawImage(s.faceImage, titlePos.x + 130, baseY +  (60*i), 64,48, null);
+				g2.drawImage(s.scoreImage, titlePos.x + 230, baseY + (60*i), s.scoreImage.getWidth() * 2, s.scoreImage.getHeight() * 2, null);
 			}
 
 

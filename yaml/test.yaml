@@ -8,3 +8,16 @@ Animations:
      speed: -1
      frames: 36
    
+---
+
+name: player
+image: ship.png
+animations: 1
+frameWidth: 16
+frameHeight: 16
+Animations:
+   - id: standard
+     speed: 700
+     frames: 2
+   
+
