@@ -10,36 +10,46 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import JMyron.*;
+
 
 public class MainGameThread extends GameThread {
 
 
 	PlayerObject player;
+	
+	JMyron jmyron;
 
 	int playerProgress = 0;
 	int playerSpeed = 10;
+	int lastPlayerSpeed = 10;
 	long lastHitTime = 0;
 	Point[] stars = new Point[40];
 	Point[] backStars = new Point[40];
-	BufferedImage fasterText, progressText, noMorePissText;
+	BufferedImage fasterText, progressText, noMorePissText, pissMoreTimer, takePhotoText;
 	long fasterTextDisplayTime = 0;
 	long shakeTime = 0;
 	long playerDeathTimeOut = 0;
 	int recoverPosition = 0;
 	boolean shake = false;
-	boolean outOfPiss = false;
+	boolean outOfPiss = false, gameOver = false;;
 	long outOfPissTime = 0;
 
 
 	int[] levelData = new int[400];
 
 	private AffineTransform screenTransform;
+	BufferedImage bi = new BufferedImage(640, 480, BufferedImage.TYPE_INT_ARGB);
+
+	private long gameOverTime;
 
 
 	public MainGameThread(Skeleton parent){
 		super(parent);
 		fasterText = parent.fixedFont.getImageFromString("<< SPEED INCREASE");
-		noMorePissText = parent.fixedFont.getImageFromString("GAME OVER NO MORE WEE");
+		noMorePissText = parent.fixedFont.getImageFromString("PISS MORE");
+		pissMoreTimer = parent.fixedFont.getImageFromString("5");
+		takePhotoText = parent.fixedFont.getImageFromString("POSE");
 		progressText = parent.fixedFont.getImageFromString("SCORE " + playerProgress);
 		player = new PlayerObject(300, -500, parent.spriteBank.getSpriteByName("player"));
 		player.isActive = true;
@@ -68,13 +78,31 @@ public class MainGameThread extends GameThread {
 		System.out.println();
 		screenTransform = new AffineTransform();
 
+		
+		jmyron = new JMyron();
+		jmyron.start(640,480);
 
 	}
 
 	public void start(){
 		super.start();
 		lastHitTime = System.currentTimeMillis();
+		//generate a level
+		int curPos = 3;
+		for(int i = 0; i < 400; i++){
+			int newPos = (-1 +  (int)(Math.random() * 3));
+			curPos += newPos;
+			if(curPos < 0){
+				curPos = 1;
 
+			} else if(curPos > 5){
+				curPos = 4;
+			}
+			levelData[i] = curPos;
+			System.out.print(curPos + ",");
+
+		}
+		
 	}
 
 	public void stop(){
@@ -82,6 +110,9 @@ public class MainGameThread extends GameThread {
 		soundManager.setBgm(null);
 		playerProgress = 0;
 		playerSpeed = 10;
+		inputEngine.removeListener(this);
+		outOfPiss = false;
+		gameOver = false;
 
 	}
 	public void handleInputEvent(int evt){
@@ -106,6 +137,8 @@ public class MainGameThread extends GameThread {
 				//the controller has determined there is no more piss
 				outOfPiss = true;
 				outOfPissTime = System.currentTimeMillis();
+				lastPlayerSpeed = playerSpeed;
+				playerSpeed = 0;
 				
 			}
 		}
@@ -129,8 +162,8 @@ public class MainGameThread extends GameThread {
 		}
 
 		//we didnt hit anything, speed up
-		if(lastHitTime + 2000 < System.currentTimeMillis()){
-			playerSpeed += 2;
+		if(lastHitTime + 1000 < System.currentTimeMillis() && outOfPiss == false && gameOver == false){
+			playerSpeed += 5;
 			lastHitTime = System.currentTimeMillis();
 			fasterTextDisplayTime = lastHitTime;
 		}
@@ -173,13 +206,25 @@ public class MainGameThread extends GameThread {
 			
 		}
 		
-		if(outOfPissTime > System.currentTimeMillis() - 1000){
+		if(outOfPissTime < System.currentTimeMillis() - 5000 && outOfPiss == true){
 			//switch to high score mode. Pass the highscore back to parent
-			parent.finishedWithScore(playerProgress);
+			//parent.finishedWithScore(playerProgress);
+			gameOver = true;
+			gameOverTime = System.currentTimeMillis();
+			outOfPiss = false;
 		}
 
+		if(gameOverTime < System.currentTimeMillis() - 3000 && gameOver == true){
+			//switch to high score mode. Pass the highscore back to parent
+			BufferedImage snap = bi;
+			parent.finishedWithScore(playerProgress,snap);;
+		}
 
 	}
+	
+	
+	
+		
 
 	public void repaint()
 	{
@@ -205,13 +250,12 @@ public class MainGameThread extends GameThread {
 			g2.setColor(new Color(100,100,100));
 			for(int i = 0; i < 7; i++){
 				if(currentLevelSegment - i > 0){
-					if( i == 5){
-						g2.setColor(new Color(255,0,0));
-
-					} else {
-						g2.setColor(new Color(100,100,100));
-					}
+					
+					//left
 					g2.fillRect(0,i * 100 + shiftLevel,50 + levelData[currentLevelSegment - i] * 100, 100);
+					
+					
+					//right
 					g2.fillRect(50 + levelData[currentLevelSegment - i] * 100 + 400, i * 100 + shiftLevel, 500, 100);
 				}
 			}
@@ -239,8 +283,27 @@ public class MainGameThread extends GameThread {
 			}
 			g2.drawImage(progressText, 50, 50, null);
 
+			if(outOfPiss){
+				int timer = (int) ( 5 - (System.currentTimeMillis() - outOfPissTime) / 1000 );
+				pissMoreTimer = parent.fixedFont.getImageFromString("" + timer);
+				g2.drawImage(pissMoreTimer, 150, 200,pissMoreTimer.getWidth() * 4, pissMoreTimer.getHeight() * 4, null);
+				g2.drawImage(noMorePissText,-100,100,noMorePissText.getWidth() * 4, noMorePissText.getHeight() * 4, null);
+			}
+			
+			if(gameOver){
+				drawCamera(g2);
+				g2.drawImage(takePhotoText, 100, 300,takePhotoText.getWidth() * 4, takePhotoText.getHeight() * 4, null);
+			}
+
+			
 		}
 	}
 
+	private void drawCamera(Graphics2D g2){
+		jmyron.update();//update the camera view
+		int[] img = jmyron.image(); //get the normal image of the camera
+		bi.setRGB(0,0,640,480,img,0,640);
+		g2.drawImage(bi, 280, 60, 320, 240, null);
+	}
 
 }

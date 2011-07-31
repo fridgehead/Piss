@@ -1,6 +1,7 @@
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.swing.JFrame;
@@ -74,9 +75,9 @@ public class Skeleton extends JFrame implements KeyListener {
         
     }
     
-    public void finishedWithScore(int score){
+    public void finishedWithScore(int score, BufferedImage snap){
     	if(state != MODE_HIGHSCORE){
-    		highScoreThread.newScore(score);
+    		highScoreThread.newScore(score, snap);
     		p.changeThread(highScoreThread);
     		state = MODE_HIGHSCORE;
     	}

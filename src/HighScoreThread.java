@@ -26,6 +26,8 @@ public class HighScoreThread extends GameThread {
 
 	private long timeStarted;
 	int scrollY = 300;
+	
+	boolean newHighScore = false;
 
 	public HighScoreThread(Skeleton parent) {
 		super(parent);
@@ -50,18 +52,21 @@ public class HighScoreThread extends GameThread {
 		Collections.sort(scores);
 	}
 	
-	public void newScore(int score){
+	public void newScore(int score, BufferedImage snap){
 		BufferedImage t;
-		try {
-			t = ImageIO.read(new File("img/face1.png"));
+		
+			if(score > scores.get(0).score){
+				newHighScore = true;
+			}
+			t = snap;
 			t = resize(t, 64,48);
-			scores.add(new ScoreItem(t,score));
+			ScoreItem s = new ScoreItem(t,score);
+			
+			s.newScore = true;
+			scores.add(s);
 			Collections.sort(scores);
 			scores.remove(scores.size() - 1);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 		
 		
 	}
@@ -81,11 +86,16 @@ public class HighScoreThread extends GameThread {
 		super.start();
 		timeStarted = System.currentTimeMillis();
 		scrollY = -600;
+		newHighScore = false;
+		for(ScoreItem s : scores){
+			s.newScore = false;
+		}
 	}
 
 	public void stop(){
 		//reset everything
 		super.stop();
+		
 
 	}
 
@@ -112,14 +122,23 @@ public class HighScoreThread extends GameThread {
 			g2.drawImage(titleImage, titlePos.x,titlePos.y, titleImage.getWidth() * 3, titleImage.getHeight() * 3, null);
 
 			int baseY = titlePos.y + 260 ;
+			
 			//big image at the top for the CHAMP
 			ScoreItem s = scores.get(0);
+			if(s.newScore){
+				g2.setColor (new Color (254,243,140));
+				g2.fillRect(0, baseY - 160, 800, 192);
+			}
 			g2.drawImage(s.faceImage, titlePos.x + 130, baseY - 160 , 256,192, null);
 			g2.drawImage(s.scoreImage, titlePos.x + 230, baseY - 130, s.scoreImage.getWidth() * 4, scores.get(0).scoreImage.getHeight() * 4, null);
 
 			//draw the lower list
 			for(int i = 1; i < 10; i++){
 				s = scores.get(i);
+				if(s.newScore){
+					g2.setColor (new Color (254,243,140));
+					g2.fillRect(0, baseY +  (60*i), 800, 48);
+				}
 				g2.drawImage(s.faceImage, titlePos.x + 130, baseY +  (60*i), 64,48, null);
 				g2.drawImage(s.scoreImage, titlePos.x + 230, baseY + (60*i), s.scoreImage.getWidth() * 2, s.scoreImage.getHeight() * 2, null);
 			}
@@ -137,9 +156,11 @@ public class HighScoreThread extends GameThread {
 		//on any event start game
 		if(evt == InputEngine.KEY_ESC){
 			parent.quit();
-		} else {
-
-			parent.startGame();
+		} else if (evt != InputEngine.KEY_NOMOREPISS){
+		
+			if(newHighScore == false){
+				parent.startGame();
+			}
 
 		}
 	}
@@ -150,6 +171,7 @@ public class HighScoreThread extends GameThread {
 	public class ScoreItem implements Comparable<ScoreItem>{
 		public int score = 0;
 		public BufferedImage scoreImage, faceImage;
+		public boolean newScore = false;
 
 		public ScoreItem(BufferedImage bufIn, int score){
 			this.score = score;
