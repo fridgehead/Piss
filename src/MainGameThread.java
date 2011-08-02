@@ -6,11 +6,11 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import JMyron.*;
 
 
 public class MainGameThread extends GameThread {
@@ -18,7 +18,6 @@ public class MainGameThread extends GameThread {
 
 	PlayerObject player;
 
-	JMyron jmyron;
 
 	int playerProgress = 600;
 	int playerSpeed = 10;
@@ -35,6 +34,7 @@ public class MainGameThread extends GameThread {
 	boolean shake = false;
 	boolean outOfPiss = false, gameOver = false;;
 	long outOfPissTime = 0;
+	ArrayList<PlayerObject> otherPlayers = new ArrayList<PlayerObject>();
 
 
 	int[] levelData = new int[400];
@@ -50,7 +50,7 @@ public class MainGameThread extends GameThread {
 		fasterText = parent.fixedFont.getImageFromString("<< SPEED INCREASE");
 		noMorePissText = parent.fixedFont.getImageFromString("PISS MORE");
 		pissMoreTimer = parent.fixedFont.getImageFromString("5");
-		takePhotoText = parent.fixedFont.getImageFromString("POSE");
+		takePhotoText = parent.fixedFont.getImageFromString("GAME OVER");
 		progressText = parent.fixedFont.getImageFromString("SCORE " + playerProgress);
 		player = new PlayerObject(650, -500, parent.spriteBank.getSpriteByName("player"));
 		player.isActive = true;
@@ -80,9 +80,22 @@ public class MainGameThread extends GameThread {
 		screenTransform = new AffineTransform();
 
 
-		jmyron = new JMyron();
-		jmyron.start(640,480);
 
+	}
+	
+	public void setOtherPlayerPos(int id, int xPos, int playerProgress){
+		int ct = 0;
+		for(PlayerObject p : otherPlayers){
+			if(p.playerId == id){
+				p.worldPosition.x = xPos;
+			}
+			ct++;
+		}
+		if(ct == 0){
+			PlayerObject p = new PlayerObject(xPos, -500, parent.spriteBank.getSpriteByName("player"));
+			p.playerId = id;
+			otherPlayers.add(p);
+		}
 	}
 
 	public void start(){
@@ -293,6 +306,7 @@ public class MainGameThread extends GameThread {
 				g2.setTransform(f);
 
 			}
+			
 			g2.drawImage(progressText, 50, 50, null);
 
 			if(outOfPiss){
@@ -303,23 +317,23 @@ public class MainGameThread extends GameThread {
 			}
 
 			if(gameOver){
-				drawCamera(g2);
-				g2.drawImage(takePhotoText, 100, 300,takePhotoText.getWidth() * 4, takePhotoText.getHeight() * 4, null);
+				//drawCamera(g2);
+				g2.drawImage(takePhotoText, -200, 200,takePhotoText.getWidth() * 4, takePhotoText.getHeight() * 4, null);
 			}
 			
 			if(lastNetworkUpdate + 50 < System.currentTimeMillis()){
 				parent.tcpClient.sendMessage(playerProgress + "," + player.worldPosition.x);
 				lastNetworkUpdate = System.currentTimeMillis();
 			}
+			
+			g2.setColor(new Color(0,255,0));
+			for(PlayerObject p : otherPlayers){
+				g2.fillRect(p.worldPosition.x, 300, 50,50);
+			}
 
 		}
 	}
 
-	private void drawCamera(Graphics2D g2){
-		jmyron.update();//update the camera view
-		int[] img = jmyron.image(); //get the normal image of the camera
-		bi.setRGB(0,0,640,480,img,0,640);
-		g2.drawImage(bi, 240, 60, 320, 240, null);
-	}
+	
 
 }

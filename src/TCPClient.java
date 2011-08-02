@@ -16,26 +16,28 @@ import javax.imageio.stream.ImageInputStream;
 
 
 
-public class TCPClient implements Runnable {
+public class TCPClient extends Thread {
 	Socket socket;
 	boolean ready = false;
 	PrintWriter out;
 	int playerId = -1;
 	private BufferedReader inFromServer;
 	private boolean running = false;
-	
-	public  TCPClient(int playerId){
+	MainGameThread parent;
+
+	public  TCPClient(int playerId, MainGameThread parent){
 		this.playerId = playerId;
-		
+		this.parent = parent;
 
 
 	}
-	
+
 	public void start(){
+		super.start();
 		running = true;
-		
+
 	}
-	
+
 	public void disconnect(){
 		try {
 			socket.close();
@@ -44,9 +46,9 @@ public class TCPClient implements Runnable {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 		}
-		
+
 	}
-	
+
 	public void connect(String ip, int port){
 		try {
 			InetAddress serverAddr = InetAddress.getByName(ip);
@@ -66,7 +68,7 @@ public class TCPClient implements Runnable {
 			}
 		} catch (Exception e){
 
-			
+
 		}
 		try {
 			inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -80,55 +82,58 @@ public class TCPClient implements Runnable {
 			try {
 				String message = "score," + s.score + ",london,";
 				out.print(message);
-			
+
 				Base64.OutputStream out2 = new Base64.OutputStream(socket.getOutputStream());
 				FileInputStream fIn = new FileInputStream(s.file);
 				out2.write(fIn.read());
 				out.println();
-				
+
 				fIn.close();
-				
+
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		}
-			
-		
+
+
 	}
-	
+
 	public void sendMessage(String mess){
 		if(ready){
 			String mess2 = "P," + playerId + "," + mess;
-			
+
 			out.println(mess2);
 		}
 	}
 
 	public void run() {
-		while(running ){
-			try {
-				
-				String serverSentence = inFromServer.readLine();
-				if(serverSentence != null){
-					processMessage(serverSentence);
+		while(true ){
+			while(running){
+				try {
+					
+					String serverSentence = inFromServer.readLine();
+					if(serverSentence != null){
+						processMessage(serverSentence);
+					}
+				} catch (Exception e){
+					e.printStackTrace();
+
 				}
-			} catch (Exception e){
-				e.printStackTrace();
-				
 			}
 		}
-		
+
 	}
 
 	private void processMessage(String serverSentence) {
 		String[] elements = serverSentence.split(",");
 
 		if(elements.length > 0) {
+			
 			if (elements[0].equals("P")){
 				//read the player ID and positions
-				System.out.println(serverSentence);
+				parent.setOtherPlayerPos(Integer.parseInt(elements[1]), Integer.parseInt(elements[3]), -1);
 			}
 		}
 	}

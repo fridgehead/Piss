@@ -7,6 +7,7 @@ public class PlayerObject extends GameObject {
 	int direction = 0;
 	int destinationX = 0;
 	boolean moving = false;
+	public int playerId = -1;
 
 	public PlayerObject(int wx, int wy, Sprite s) {
 		super(wx, wy, s);

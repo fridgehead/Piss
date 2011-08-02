@@ -87,8 +87,10 @@ public class Skeleton extends JFrame implements KeyListener {
 		} catch (Exception e){
 			e.printStackTrace();
 		}
-		tcpClient = new TCPClient(playerId);
+		tcpClient = new TCPClient(playerId, mainThread);
 		tcpClient.connect("127.0.0.1", 4444);
+		
+		tcpClient.start();
 		//spawn off a gamestate thread
 		//start it
 		//gamestate responsible for IO passing, 
