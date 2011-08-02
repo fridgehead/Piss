@@ -73,7 +73,7 @@ public class TitleThread extends GameThread {
 		if(isRunning){
 			//System.out.println("thread draw");
 			Graphics2D g2 = (Graphics2D) bufferGraphics;
-			g2.setColor(new Color(255,255,255));
+			g2.setColor(new Color(0,0,0));
 			g2.fillRect(0, 0, 800, 600);
 			if(titleDisplay){
 				g2.drawImage(pissToStartImage, 230, 540,null);

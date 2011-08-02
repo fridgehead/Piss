@@ -28,6 +28,8 @@ public class HighScoreThread extends GameThread {
 	int scrollY = 300;
 	
 	boolean newHighScore = false;
+	
+	
 
 	public HighScoreThread(Skeleton parent) {
 		super(parent);
@@ -66,7 +68,7 @@ public class HighScoreThread extends GameThread {
 			scores.add(s);
 			Collections.sort(scores);
 			scores.remove(scores.size() - 1);
-		
+		//	parent.tcpClient.sendScore(s);
 		
 		
 	}
@@ -116,7 +118,7 @@ public class HighScoreThread extends GameThread {
 	public void repaint(){
 		if(isReady){
 			Graphics2D g2 = (Graphics2D) bufferGraphics;
-			g2.setColor(new Color(255,255,255));
+			g2.setColor(new Color(0,0,0));
 			g2.fillRect(0, 0, 800, 600);
 			Point titlePos = cam.toScreenPosition(new Point(-30,scrollY));
 			g2.drawImage(titleImage, titlePos.x,titlePos.y, titleImage.getWidth() * 3, titleImage.getHeight() * 3, null);
@@ -172,11 +174,27 @@ public class HighScoreThread extends GameThread {
 		public int score = 0;
 		public BufferedImage scoreImage, faceImage;
 		public boolean newScore = false;
+		
+		public String file = "";
 
 		public ScoreItem(BufferedImage bufIn, int score){
 			this.score = score;
 			this.faceImage = bufIn;		
 			scoreImage = parent.fixedFont.getImageFromString("" + score);
+		}
+		
+		public void setImageFromFile(String in){
+			file = in;
+			BufferedImage t;
+			try {
+				t = ImageIO.read(new File("img/" + file));
+				t = resize(t, 64,48);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
 		}
 
 		public int compareTo(ScoreItem o) {

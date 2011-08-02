@@ -17,13 +17,14 @@ public class MainGameThread extends GameThread {
 
 
 	PlayerObject player;
-	
+
 	JMyron jmyron;
 
-	int playerProgress = 0;
+	int playerProgress = 600;
 	int playerSpeed = 10;
 	int lastPlayerSpeed = 10;
 	long lastHitTime = 0;
+	long lastNetworkUpdate = 0;
 	Point[] stars = new Point[40];
 	Point[] backStars = new Point[40];
 	BufferedImage fasterText, progressText, noMorePissText, pissMoreTimer, takePhotoText;
@@ -51,7 +52,7 @@ public class MainGameThread extends GameThread {
 		pissMoreTimer = parent.fixedFont.getImageFromString("5");
 		takePhotoText = parent.fixedFont.getImageFromString("POSE");
 		progressText = parent.fixedFont.getImageFromString("SCORE " + playerProgress);
-		player = new PlayerObject(300, -500, parent.spriteBank.getSpriteByName("player"));
+		player = new PlayerObject(650, -500, parent.spriteBank.getSpriteByName("player"));
 		player.isActive = true;
 		player.setAnimation(0);
 		//cam = new Camera(new Point(0,0), new Point(800,600));
@@ -78,7 +79,7 @@ public class MainGameThread extends GameThread {
 		System.out.println();
 		screenTransform = new AffineTransform();
 
-		
+
 		jmyron = new JMyron();
 		jmyron.start(640,480);
 
@@ -103,12 +104,16 @@ public class MainGameThread extends GameThread {
 
 		}
 		
+		player.worldPosition.x = 50 + recoverPosition * 100;
+		player.moveTo(player.worldPosition.x);
+		
+
 	}
 
 	public void stop(){
 		super.stop();
 		soundManager.setBgm(null);
-		playerProgress = 0;
+		playerProgress = 600;
 		playerSpeed = 10;
 		inputEngine.removeListener(this);
 		outOfPiss = false;
@@ -117,29 +122,36 @@ public class MainGameThread extends GameThread {
 	}
 	public void handleInputEvent(int evt){
 		if(isRunning){
-			if (evt == InputEngine.KEY_ESC){
-				parent.quit();
-			} else if( evt == InputEngine.KEY_TRACK0) {
-				player.moveTo(50);
-			}else if( evt == InputEngine.KEY_TRACK1) {
-				player.moveTo(150);
-			} else if( evt == InputEngine.KEY_TRACK2) {
-				player.moveTo(250);
-			} else if( evt == InputEngine.KEY_TRACK3) {
-				player.moveTo(350);
-			}else if( evt == InputEngine.KEY_TRACK4) {
-				player.moveTo(450);
-			} else if( evt == InputEngine.KEY_TRACK5) {
-				player.moveTo(550);
-			}else if( evt == InputEngine.KEY_TRACK6) {
-				player.moveTo(650);
-			} else if (evt == InputEngine.KEY_NOMOREPISS){
-				//the controller has determined there is no more piss
-				outOfPiss = true;
-				outOfPissTime = System.currentTimeMillis();
-				lastPlayerSpeed = playerSpeed;
-				playerSpeed = 0;
-				
+			if(outOfPiss == false){
+				if (evt == InputEngine.KEY_ESC){
+					parent.quit();
+				} else if( evt == InputEngine.KEY_TRACK0) {
+					player.moveTo(50);
+				}else if( evt == InputEngine.KEY_TRACK1) {
+					player.moveTo(150);
+				} else if( evt == InputEngine.KEY_TRACK2) {
+					player.moveTo(250);
+				} else if( evt == InputEngine.KEY_TRACK3) {
+					player.moveTo(350);
+				}else if( evt == InputEngine.KEY_TRACK4) {
+					player.moveTo(450);
+				} else if( evt == InputEngine.KEY_TRACK5) {
+					player.moveTo(550);
+				}else if( evt == InputEngine.KEY_TRACK6) {
+					player.moveTo(650);
+				} else if (evt == InputEngine.KEY_NOMOREPISS){
+					//the controller has determined there is no more piss
+					outOfPiss = true;
+					outOfPissTime = System.currentTimeMillis();
+					lastPlayerSpeed = playerSpeed;
+					playerSpeed = 0;
+
+				}
+			} else {
+				if(evt != InputEngine.KEY_NOMOREPISS){
+					playerSpeed = lastPlayerSpeed;
+					outOfPiss = false;
+				}
 			}
 		}
 	}
@@ -203,9 +215,9 @@ public class MainGameThread extends GameThread {
 			player.worldPosition.x = 50 + recoverPosition * 100;
 			player.moveTo(player.worldPosition.x);
 			playerSpeed = 15;
-			
+
 		}
-		
+
 		if(outOfPissTime < System.currentTimeMillis() - 5000 && outOfPiss == true){
 			//switch to high score mode. Pass the highscore back to parent
 			//parent.finishedWithScore(playerProgress);
@@ -221,10 +233,10 @@ public class MainGameThread extends GameThread {
 		}
 
 	}
-	
-	
-	
-		
+
+
+
+
 
 	public void repaint()
 	{
@@ -233,9 +245,9 @@ public class MainGameThread extends GameThread {
 			g2.setTransform(screenTransform);
 
 
-			g2.setColor(new Color(255,255,255));
+			g2.setColor(new Color(0,0,0));
 			g2.fillRect(0, 0, 800, 600);
-			g2.setColor(new Color(100,100,100));
+			g2.setColor(new Color(230,230,230));
 			//draw a starry BG
 			for(int i = 0; i < 40; i++){
 				g2.fillOval(backStars[i].x, backStars[i].y, 5, 5);
@@ -250,11 +262,11 @@ public class MainGameThread extends GameThread {
 			g2.setColor(new Color(100,100,100));
 			for(int i = 0; i < 7; i++){
 				if(currentLevelSegment - i > 0){
-					
+
 					//left
 					g2.fillRect(0,i * 100 + shiftLevel,50 + levelData[currentLevelSegment - i] * 100, 100);
-					
-					
+
+
 					//right
 					g2.fillRect(50 + levelData[currentLevelSegment - i] * 100 + 400, i * 100 + shiftLevel, 500, 100);
 				}
@@ -289,13 +301,17 @@ public class MainGameThread extends GameThread {
 				g2.drawImage(pissMoreTimer, 150, 200,pissMoreTimer.getWidth() * 4, pissMoreTimer.getHeight() * 4, null);
 				g2.drawImage(noMorePissText,-100,100,noMorePissText.getWidth() * 4, noMorePissText.getHeight() * 4, null);
 			}
-			
+
 			if(gameOver){
 				drawCamera(g2);
 				g2.drawImage(takePhotoText, 100, 300,takePhotoText.getWidth() * 4, takePhotoText.getHeight() * 4, null);
 			}
-
 			
+			if(lastNetworkUpdate + 50 < System.currentTimeMillis()){
+				parent.tcpClient.sendMessage(playerProgress + "," + player.worldPosition.x);
+				lastNetworkUpdate = System.currentTimeMillis();
+			}
+
 		}
 	}
 
@@ -303,7 +319,7 @@ public class MainGameThread extends GameThread {
 		jmyron.update();//update the camera view
 		int[] img = jmyron.image(); //get the normal image of the camera
 		bi.setRGB(0,0,640,480,img,0,640);
-		g2.drawImage(bi, 280, 60, 320, 240, null);
+		g2.drawImage(bi, 240, 60, 320, 240, null);
 	}
 
 }
