@@ -54,6 +54,16 @@ public class HighScoreThread extends GameThread {
 		Collections.sort(scores);
 	}
 	
+	public void newScoreFromNetwork(String name, String location, int score){
+		ScoreItem s = new ScoreItem(null, score);
+		s.loc = location;
+		s.name = name;
+		scores.add(s);
+		Collections.sort(scores);
+		scores.remove(scores.size() - 1);
+		
+	}
+	
 	public void newScore(int score, BufferedImage snap){
 		BufferedImage t;
 		
@@ -65,10 +75,12 @@ public class HighScoreThread extends GameThread {
 			ScoreItem s = new ScoreItem(t,score);
 			
 			s.newScore = true;
+			parent.tcpClient.sendScore(s);
+
 			scores.add(s);
 			Collections.sort(scores);
 			scores.remove(scores.size() - 1);
-		//	parent.tcpClient.sendScore(s);
+			s.loc  = "London";
 		
 		
 	}
@@ -92,6 +104,7 @@ public class HighScoreThread extends GameThread {
 		for(ScoreItem s : scores){
 			s.newScore = false;
 		}
+		parent.requestScoreUpdate();
 	}
 
 	public void stop(){
@@ -171,6 +184,7 @@ public class HighScoreThread extends GameThread {
 	 * Inner class for score items
 	 */
 	public class ScoreItem implements Comparable<ScoreItem>{
+		public String loc = "", name = "";
 		public int score = 0;
 		public BufferedImage scoreImage, faceImage;
 		public boolean newScore = false;

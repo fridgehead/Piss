@@ -27,6 +27,7 @@ public class Skeleton extends JFrame implements KeyListener {
 	public int credits = 0;
 	public int lives = 0;
 	int playerId = -1;
+	String location = "";
 
 
 	public static final int MODE_TITLE = 0;
@@ -83,6 +84,7 @@ public class Skeleton extends JFrame implements KeyListener {
 				Sprite tempSprite = new Sprite();
 				Map<String, Object> objMap = (Map<String, Object>)obj;
 				playerId = ((Integer)(objMap.get("playerId"))).intValue();
+				location = (String)objMap.get("location");
 			}	
 		} catch (Exception e){
 			e.printStackTrace();
@@ -98,6 +100,10 @@ public class Skeleton extends JFrame implements KeyListener {
 		titleThread.start();
 
 		
+	}
+	
+	public void newScoreFromNetwork(String name, String location, int score){
+		highScoreThread.newScoreFromNetwork(name, location, score);
 	}
 
 
@@ -164,6 +170,12 @@ public class Skeleton extends JFrame implements KeyListener {
 	public void keyReleased(KeyEvent e) {
 		inputEngine.keyRelease(e.getKeyCode());
 
+	}
+
+	public void requestScoreUpdate() {
+		System.out.println("getting scores");
+		tcpClient.sendMessage("getscores");
+		
 	}
 
 

@@ -60,6 +60,7 @@ public class TCPClient extends Thread {
 
 				out = new PrintWriter( new BufferedWriter( new OutputStreamWriter(socket.getOutputStream())),true); 
 				out.println(message);
+				out.println("getlevel");
 
 
 				ready = true;
@@ -79,26 +80,25 @@ public class TCPClient extends Thread {
 	}
 	public void sendScore(HighScoreThread.ScoreItem s){
 		if(ready){
-			try {
-				String message = "score," + s.score + ",london,";
-				out.print(message);
-
+			//try {
+				String message = "newscore," + playerId + "," + s.score + ",london";
+				out.println(message);
+				System.out.println("sending score: " + message);
+/*
 				Base64.OutputStream out2 = new Base64.OutputStream(socket.getOutputStream());
 				FileInputStream fIn = new FileInputStream(s.file);
 				out2.write(fIn.read());
 				out.println();
 
-				fIn.close();
+				fIn.close();*/
 
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
+			
 		}
 
 
 	}
+	
+	
 
 	public void sendMessage(String mess){
 		if(ready){
@@ -133,9 +133,15 @@ public class TCPClient extends Thread {
 			
 			if (elements[0].equals("P")){
 				//read the player ID and positions
-				parent.setOtherPlayerPos(Integer.parseInt(elements[1]), Integer.parseInt(elements[3]), -1);
+				parent.setOtherPlayerPos(Integer.parseInt(elements[1]), Integer.parseInt(elements[3]),  Integer.parseInt(elements[2]));
+			} else if (elements[0].equals("level")){
+				System.out.println("got level data: " + serverSentence);
+				parent.setLevel(elements);
+			} else if (elements[0].equals("newscore")){
+				parent.newScoreFromNetwork(elements[1], elements[3], Integer.parseInt(elements[2]) );
+				
 			}
-		}
+		} 
 	}
 
 }

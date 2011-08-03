@@ -82,19 +82,25 @@ public class MainGameThread extends GameThread {
 
 
 	}
+	public void newScoreFromNetwork(String name, String location, int score){
+		parent.newScoreFromNetwork(name, location, score);
+	}
 	
 	public void setOtherPlayerPos(int id, int xPos, int playerProgress){
 		int ct = 0;
 		for(PlayerObject p : otherPlayers){
 			if(p.playerId == id){
 				p.worldPosition.x = xPos;
+				p.playerProgress = playerProgress;
 			}
 			ct++;
 		}
 		if(ct == 0){
 			PlayerObject p = new PlayerObject(xPos, -500, parent.spriteBank.getSpriteByName("player"));
 			p.playerId = id;
+			p.playerProgress = playerProgress;
 			otherPlayers.add(p);
+			
 		}
 	}
 
@@ -102,7 +108,7 @@ public class MainGameThread extends GameThread {
 		super.start();
 		lastHitTime = System.currentTimeMillis();
 		//generate a level
-		int curPos = 3;
+		/*int curPos = 3;
 		for(int i = 0; i < 400; i++){
 			int newPos = (-1 +  (int)(Math.random() * 3));
 			curPos += newPos;
@@ -116,7 +122,7 @@ public class MainGameThread extends GameThread {
 			System.out.print(curPos + ",");
 
 		}
-		
+		*/
 		player.worldPosition.x = 50 + recoverPosition * 100;
 		player.moveTo(player.worldPosition.x);
 		
@@ -328,10 +334,23 @@ public class MainGameThread extends GameThread {
 			
 			g2.setColor(new Color(0,255,0));
 			for(PlayerObject p : otherPlayers){
-				g2.fillRect(p.worldPosition.x, 300, 50,50);
+				int yPos = playerProgress - p.playerProgress;
+				g2.fillRect(p.worldPosition.x, 500 + yPos, 50,50);
 			}
 
 		}
+	}
+
+	public void setLevel(String[] elements) {
+		int[] levelNew = new int[400];
+		int count = 0;
+		for(String s : elements){
+			if(! s.equals("level") && !s.equals("")){
+				levelNew[count] = Integer.parseInt(s);
+				count++;
+			}
+		}
+		levelData = levelNew;
 	}
 
 	
