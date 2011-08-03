@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import JMyron.JMyron;
+
 
 
 public class MainGameThread extends GameThread {
@@ -43,6 +45,9 @@ public class MainGameThread extends GameThread {
 	BufferedImage bi = new BufferedImage(640, 480, BufferedImage.TYPE_INT_ARGB);
 
 	private long gameOverTime;
+
+
+	private JMyron jmyron;
 
 
 	public MainGameThread(Skeleton parent){
@@ -79,7 +84,8 @@ public class MainGameThread extends GameThread {
 		System.out.println();
 		screenTransform = new AffineTransform();
 
-
+		jmyron = new JMyron();
+		jmyron.start(640,480);
 
 	}
 	public void newScoreFromNetwork(String name, String location, int score){
@@ -351,6 +357,13 @@ public class MainGameThread extends GameThread {
 			}
 		}
 		levelData = levelNew;
+	}
+	
+	private void drawCamera(Graphics2D g2){
+        jmyron.update();//update the camera view
+        int[] img = jmyron.image(); //get the normal image of the camera
+        bi.setRGB(0,0,640,480,img,0,640);
+        g2.drawImage(bi, 280, 60, 320, 240, null);
 	}
 
 	
