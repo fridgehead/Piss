@@ -48,7 +48,8 @@ public class Skeleton extends JFrame implements KeyListener {
 		soundManager = new SoundManager(); 
 
 		addKeyListener(this);
-		inputEngine = new InputEngine();
+		inputEngine = new InputEngine(this );
+		inputEngine.start();
 
 		fixedFont = new FixedFontImage(spriteBank.getSpriteByName("FixedFontSmall"));
 

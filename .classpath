@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="snakeyaml-1.8.jar"/>
+	<classpathentry kind="lib" path="/Users/tomwyatt/Documents/workspace/Piss/JMyron/library/JMyron.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/Users/tomwyatt/Documents/workspace/Piss/JMyron/library"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/tomwyatt/Documents/workspace/Piss/serial/serial.jar" sourcepath="/Applications/Processing.app/Contents/Resources/Java/libraries/serial/src/processing/serial"/>
+	<classpathentry kind="lib" path="/Users/tomwyatt/Documents/workspace/Piss/serial/RXTXcomm.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/Users/tomwyatt/Documents/workspace/Piss/serial"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/tomwyatt/Documents/workspace/Piss/core.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

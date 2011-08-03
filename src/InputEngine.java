@@ -1,7 +1,18 @@
 
-import java.util.ArrayList;
+import gnu.io.CommPortIdentifier;
+import gnu.io.SerialPort;
+import gnu.io.SerialPortEvent;
+import gnu.io.SerialPortEventListener;
 
-public class InputEngine{
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+
+
+import processing.core.PApplet;
+import processing.serial.Serial;
+
+public class InputEngine extends Thread implements SerialPortEventListener{ 
 
 	public static final int KEY_TRACK0 = 1;
 	public static final int KEY_TRACK1 = 2;
@@ -14,15 +25,112 @@ public class InputEngine{
 	public static final int KEY_NOMOREPISS = 256;
 
 
+	public InputStream input;
+	public OutputStream output;
+
+	byte buffer[] = new byte[32768];
+	int bufferIndex;
+	int bufferLast;
+
+	//boolean bufferUntil = false;
+	int bufferSize = 1;  // how big before reset or event firing
+	boolean bufferUntil;
+	int bufferUntilByte;
+
+
+
 
 	int keyMask = 0;
+	boolean running = false;
 
 	private ArrayList<GameThread> listeners = new ArrayList<GameThread>(5);
 
+	Skeleton parent;
+	private SerialPort port;
+	String iname = "/dev/tty.usbserial-A4007S2a";
 
-	public InputEngine(){
+	String dname = "COM1";
+	int drate = 9600;
+	char dparity = 'N';
+	int ddatabits = 8;
+	int dstopbits = 1;
 
+	public InputEngine(Skeleton parent){
+
+
+		try {
+			Enumeration<?> portList = CommPortIdentifier.getPortIdentifiers();
+			while (portList.hasMoreElements()) {
+				CommPortIdentifier portId =
+					(CommPortIdentifier) portList.nextElement();
+
+				if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
+					//System.out.println("found " + portId.getName());
+					if (portId.getName().equals(iname)) {
+						port = (SerialPort)portId.open("serial madness", 2000);
+						input = port.getInputStream();
+						output = port.getOutputStream();
+						port.setSerialPortParams(9600, 8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+						port.addEventListener(this);
+						port.notifyOnDataAvailable(true);
+						//System.out.println("opening, ready to roll");
+					}
+				}
+			}
+
+		} catch (Exception e) {
+			//exception = e;
+			e.printStackTrace();
+			port = null;
+			input = null;
+			output = null;
+		}
+
+
+
+		running = true;
 	}
+
+	synchronized public void serialEvent(SerialPortEvent serialEvent) {
+		if (serialEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
+			try {
+				while (input.available() > 0) {
+					synchronized (buffer) {
+						if (bufferLast == buffer.length) {
+							byte temp[] = new byte[bufferLast << 1];
+							System.arraycopy(buffer, 0, temp, 0, bufferLast);
+							buffer = temp;
+						}
+						buffer[bufferLast++] = (byte) input.read();
+
+					}
+				}
+			} catch (IOException e) {
+				System.out.println("serialEvent");
+				e.printStackTrace();
+			}
+		}
+	}
+
+
+	public int available() {
+		return (bufferLast - bufferIndex);
+	}
+
+	public int read() {
+		if (bufferIndex == bufferLast) return -1;
+
+		synchronized (buffer) {
+			int outgoing = buffer[bufferIndex++] & 0xff;
+			if (bufferIndex == bufferLast) {  // rewind
+				bufferIndex = 0;
+				bufferLast = 0;
+			}
+			return outgoing;
+		}
+	}
+
+
 
 	public int getKeyMask(){
 		return keyMask;
@@ -34,6 +142,16 @@ public class InputEngine{
 
 	public void removeListener(GameThread gt){
 		listeners.remove(gt);
+	}
+
+	public void run(){
+		while(true){
+			while(running){
+				if(available() > 0){
+					System.out.println(read());
+				}
+			}
+		}
 	}
 
 	public void keyPress(int kCode){
@@ -63,10 +181,10 @@ public class InputEngine{
 		break;
 		case(27):
 			sendEvent(KEY_ESC);
-			break;
+		break;
 		case(32):
 			sendEvent(KEY_NOMOREPISS);
-			
+
 		break;
 		}
 

@@ -329,8 +329,8 @@ public class MainGameThread extends GameThread {
 			}
 
 			if(gameOver){
-				//drawCamera(g2);
-				g2.drawImage(takePhotoText, -200, 200,takePhotoText.getWidth() * 4, takePhotoText.getHeight() * 4, null);
+				drawCamera(g2);
+				g2.drawImage(takePhotoText, 200, 300,takePhotoText.getWidth() * 2, takePhotoText.getHeight() * 2, null);
 			}
 			
 			if(lastNetworkUpdate + 50 < System.currentTimeMillis()){

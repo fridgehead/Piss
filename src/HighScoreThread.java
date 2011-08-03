@@ -20,7 +20,7 @@ public class HighScoreThread extends GameThread {
 
 	Camera cam;
 
-	BufferedImage titleImage,pissToStartImage;
+	BufferedImage titleImage,pissToStartImage, barnImage;
 	private long titleLastBlink;
 	private boolean titleDisplay = false;
 
@@ -35,7 +35,7 @@ public class HighScoreThread extends GameThread {
 		super(parent);
 		titleImage = parent.fixedFont.getImageFromString("HIGH SCORES");
 		pissToStartImage = parent.fixedFont.getImageFromString("Wee to start");
-
+		
 		isReady = true;
 		cam = new Camera(new Point(0,0), new Point(800,600));
 
@@ -48,6 +48,7 @@ public class HighScoreThread extends GameThread {
 
 
 			}
+			barnImage = ImageIO.read(new File("img/barn.png"));
 		} catch (Exception e){
 			e.printStackTrace();
 		}
@@ -144,8 +145,8 @@ public class HighScoreThread extends GameThread {
 				g2.setColor (new Color (254,243,140));
 				g2.fillRect(0, baseY - 160, 800, 192);
 			}
-			g2.drawImage(s.faceImage, titlePos.x + 130, baseY - 160 , 256,192, null);
-			g2.drawImage(s.scoreImage, titlePos.x + 230, baseY - 130, s.scoreImage.getWidth() * 4, scores.get(0).scoreImage.getHeight() * 4, null);
+			g2.drawImage(s.faceImage, titlePos.x + 130, baseY - 160 , 128,96, null);
+			g2.drawImage(s.scoreImage, titlePos.x + 230, baseY - 130, s.scoreImage.getWidth() * 2, scores.get(0).scoreImage.getHeight() * 2, null);
 
 			//draw the lower list
 			for(int i = 1; i < 10; i++){
@@ -194,7 +195,10 @@ public class HighScoreThread extends GameThread {
 		public ScoreItem(BufferedImage bufIn, int score){
 			this.score = score;
 			this.faceImage = bufIn;		
-			scoreImage = parent.fixedFont.getImageFromString("" + score);
+			scoreImage = parent.fixedFont.getImageFromString("Urinal " + name + " " + score);
+			if(bufIn == null){
+				faceImage = resize(barnImage, 64,48);
+			}
 		}
 		
 		public void setImageFromFile(String in){
