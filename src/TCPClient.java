@@ -81,7 +81,7 @@ public class TCPClient extends Thread {
 	public void sendScore(HighScoreThread.ScoreItem s){
 		if(ready){
 			//try {
-				String message = "newscore," + playerId + "," + s.score + ",london";
+				String message = "newscore," + playerId + "," + s.score + ",london," + s.networkId;
 				out.println(message);
 				System.out.println("sending score: " + message);
 /*
@@ -98,13 +98,23 @@ public class TCPClient extends Thread {
 
 	}
 	
-	
+	public void requestScores(){
+		if(ready){
+		
+
+			out.println("getscores");
+		} else {
+			System.out.println("not ready - getscores");
+		}
+	}
 
 	public void sendMessage(String mess){
 		if(ready){
 			String mess2 = "P," + playerId + "," + mess;
 
 			out.println(mess2);
+		} else {
+			System.out.println("not ready");
 		}
 	}
 
@@ -138,7 +148,8 @@ public class TCPClient extends Thread {
 				System.out.println("got level data: " + serverSentence);
 				parent.setLevel(elements);
 			} else if (elements[0].equals("newscore")){
-				parent.newScoreFromNetwork(elements[1], elements[3], Integer.parseInt(elements[2]) );
+				System.out.println("new score");
+				parent.newScoreFromNetwork(elements[1], elements[3], Integer.parseInt(elements[2]) ,Long.parseLong(elements[4]));
 				
 			}
 		} 

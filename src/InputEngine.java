@@ -24,6 +24,8 @@ public class InputEngine extends Thread implements SerialPortEventListener{
 	public static final int KEY_ESC = 128;
 	public static final int KEY_NOMOREPISS = 256;
 
+	int lastControlMessage = -1;
+
 
 	public InputStream input;
 	public OutputStream output;
@@ -54,11 +56,11 @@ public class InputEngine extends Thread implements SerialPortEventListener{
 	char dparity = 'N';
 	int ddatabits = 8;
 	int dstopbits = 1;
-	
+
 	long lastPissTime = 0;
 
-	public InputEngine(Skeleton parent){
-
+	public InputEngine(Skeleton parent, String serial){
+		iname = serial;
 
 		try {
 			Enumeration<?> portList = CommPortIdentifier.getPortIdentifiers();
@@ -152,17 +154,24 @@ public class InputEngine extends Thread implements SerialPortEventListener{
 				if(available() > 0){
 					int i = read();
 					for (int b = 0; b < 7; b++){
-						if((i & 1 << b) > 0) {
-							System.out.println(i);
-							
-							sendEvent(i << 1);
+						int re = (i & 1 << b);
+						if(re > 0) {
+							if(lastControlMessage != i ){
+
+								System.out.println(i);
+								lastControlMessage = i ;
+								sendEvent(i );
+							}
 						}
-						
+
 					}
-					lastPissTime = System.currentTimeMillis();
+					
+					if(i != 0 ){
+						lastPissTime = System.currentTimeMillis();
+					}
 				}
-				
-				if(lastPissTime + 500 < System.currentTimeMillis()){
+
+				if(lastPissTime + 100000 < System.currentTimeMillis()){
 					sendEvent(KEY_NOMOREPISS);
 				}
 			}
@@ -175,24 +184,25 @@ public class InputEngine extends Thread implements SerialPortEventListener{
 		switch(kCode){
 		case(49):	//left
 			keyMask |= KEY_TRACK0;
+		lastPissTime = System.currentTimeMillis();
 		break;
 		case(50):	//up
-			keyMask |= KEY_TRACK1;
+			keyMask |= KEY_TRACK1;lastPissTime = System.currentTimeMillis();
 		break;
 		case(51):	//up
-			keyMask |= KEY_TRACK2;
+			keyMask |= KEY_TRACK2;lastPissTime = System.currentTimeMillis();
 		break;
 		case(52):	//up
-			keyMask |= KEY_TRACK3;
+			keyMask |= KEY_TRACK3;lastPissTime = System.currentTimeMillis();
 		break;
 		case(53):	//A
-			keyMask |= KEY_TRACK4;
+			keyMask |= KEY_TRACK4;lastPissTime = System.currentTimeMillis();
 		break;
 		case(54):	//B
-			keyMask |= KEY_TRACK5;
+			keyMask |= KEY_TRACK5;lastPissTime = System.currentTimeMillis();
 		break;
 		case(55):	//COIN
-			keyMask |= KEY_TRACK6;
+			keyMask |= KEY_TRACK6;lastPissTime = System.currentTimeMillis();
 		break;
 		case(27):
 			sendEvent(KEY_ESC);
@@ -247,7 +257,11 @@ public class InputEngine extends Thread implements SerialPortEventListener{
 	private void sendEvent(int evt){
 		for(int i = 0; i < listeners.size(); i++){
 			GameThread g = (GameThread)listeners.get(i);
-			g.handleInputEvent(evt);
+			if(g!=null){
+				g.handleInputEvent(evt);
+			} else {
+				System.out.println("null listener");
+			}
 		}
 	}
 }

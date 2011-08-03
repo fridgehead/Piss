@@ -42,22 +42,40 @@ public class Skeleton extends JFrame implements KeyListener {
 
 	public Skeleton()  {
 		System.out.println("starting.....");
+		//load settings
+		Yaml yaml = new Yaml();			
+		InputStream input;
+		String portName = "";
+		try {
+			input = new FileInputStream("settings.yaml");
+
+
+			for(Object obj : yaml.loadAll(input)){
+				Sprite tempSprite = new Sprite();
+				Map<String, Object> objMap = (Map<String, Object>)obj;
+				playerId = ((Integer)(objMap.get("playerId"))).intValue();
+				location = (String)objMap.get("location");
+				portName = (String)objMap.get("serialport");
+			}	
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+		inputEngine = new InputEngine(this, portName);
+		inputEngine.start();
 		spriteBank = new SpriteBank();
 		int c = spriteBank.loadSprites("test.yaml");
 		System.out.println("loaded " + c + " Sprites");
 		soundManager = new SoundManager(); 
 
 		addKeyListener(this);
-		inputEngine = new InputEngine(this );
-		inputEngine.start();
-
+		
 		fixedFont = new FixedFontImage(spriteBank.getSpriteByName("FixedFontSmall"));
 
 		titleThread = new TitleThread(this);
 
 		mainThread = new MainGameThread(this);
 		highScoreThread = new HighScoreThread(this);
-
+	
 
 		//mainThread = new MainGameThread(this);
 
@@ -74,22 +92,10 @@ public class Skeleton extends JFrame implements KeyListener {
 		setLocationRelativeTo(null);
 		setVisible(true);
 		setResizable(false);
-		//load settings
-		Yaml yaml = new Yaml();			
-		InputStream input;
-		try {
-			input = new FileInputStream("settings.yaml");
+		
+		
 
-
-			for(Object obj : yaml.loadAll(input)){
-				Sprite tempSprite = new Sprite();
-				Map<String, Object> objMap = (Map<String, Object>)obj;
-				playerId = ((Integer)(objMap.get("playerId"))).intValue();
-				location = (String)objMap.get("location");
-			}	
-		} catch (Exception e){
-			e.printStackTrace();
-		}
+		
 		tcpClient = new TCPClient(playerId, mainThread);
 		tcpClient.connect("127.0.0.1", 4444);
 		
@@ -103,8 +109,8 @@ public class Skeleton extends JFrame implements KeyListener {
 		
 	}
 	
-	public void newScoreFromNetwork(String name, String location, int score){
-		highScoreThread.newScoreFromNetwork(name, location, score);
+	public void newScoreFromNetwork(String name, String location, int score, long randId){
+		highScoreThread.newScoreFromNetwork(name, location, score, randId);
 	}
 
 
@@ -175,7 +181,8 @@ public class Skeleton extends JFrame implements KeyListener {
 
 	public void requestScoreUpdate() {
 		System.out.println("getting scores");
-		tcpClient.sendMessage("getscores");
+		
+		tcpClient.requestScores();
 		
 	}
 

@@ -28,23 +28,23 @@ public class HighScoreThread extends GameThread {
 	int scrollY = 300;
 	
 	boolean newHighScore = false;
+	long lastLocalScore;
 	
 	
 
 	public HighScoreThread(Skeleton parent) {
 		super(parent);
 		titleImage = parent.fixedFont.getImageFromString("HIGH SCORES");
-		pissToStartImage = parent.fixedFont.getImageFromString("Wee to start");
+		pissToStartImage = parent.fixedFont.getImageFromString("Pee to start");
 		
 		isReady = true;
 		cam = new Camera(new Point(0,0), new Point(800,600));
-
 		try{
 			for (int i = 0; i < 10; i++){
 				BufferedImage t = ImageIO.read(new File("img/face1.png"));
 				t = resize(t, 64,48);
 				int s = 100 * i;
-				scores.add(new ScoreItem(t, s));
+				scores.add(new ScoreItem(t, s, "" + parent.playerId));
 
 
 			}
@@ -53,31 +53,39 @@ public class HighScoreThread extends GameThread {
 			e.printStackTrace();
 		}
 		Collections.sort(scores);
+		lastLocalScore = 0;
+
 	}
 	
-	public void newScoreFromNetwork(String name, String location, int score){
-		ScoreItem s = new ScoreItem(null, score);
+	public void newScoreFromNetwork(String name, String location, int score, long randId){
+		ScoreItem s = new ScoreItem(null, score, name);
 		s.loc = location;
 		s.name = name;
+		s.networkId = randId;
+			if(lastLocalScore == randId){
+				s.newScore = true;
+			}
+		
 		scores.add(s);
 		Collections.sort(scores);
-		scores.remove(scores.size() - 1);
+		//scores.remove(scores.size() - 1);
 		
 	}
 	
 	public void newScore(int score, BufferedImage snap){
 		BufferedImage t;
 		
+		
 			if(score > scores.get(0).score){
 				newHighScore = true;
 			}
 			t = snap;
 			t = resize(t, 64,48);
-			ScoreItem s = new ScoreItem(t,score);
+			ScoreItem s = new ScoreItem(t,score, "" + parent.playerId);
 			
 			s.newScore = true;
 			parent.tcpClient.sendScore(s);
-
+			lastLocalScore = s.networkId;
 			scores.add(s);
 			Collections.sort(scores);
 			scores.remove(scores.size() - 1);
@@ -102,16 +110,16 @@ public class HighScoreThread extends GameThread {
 		timeStarted = System.currentTimeMillis();
 		scrollY = -600;
 		newHighScore = false;
-		for(ScoreItem s : scores){
-			s.newScore = false;
-		}
+		scores = new ArrayList<HighScoreThread.ScoreItem>();
 		parent.requestScoreUpdate();
 	}
 
 	public void stop(){
 		//reset everything
 		super.stop();
-		
+		for(ScoreItem s : scores){
+			s.newScore = false;
+		}
 
 	}
 
@@ -140,23 +148,26 @@ public class HighScoreThread extends GameThread {
 			int baseY = titlePos.y + 260 ;
 			
 			//big image at the top for the CHAMP
+			if(scores.size() > 0){
 			ScoreItem s = scores.get(0);
 			if(s.newScore){
-				g2.setColor (new Color (254,243,140));
+				g2.setColor (new Color ((int)(Math.random() * 255),(int)(Math.random() * 255),(int)(Math.random() * 255)));
 				g2.fillRect(0, baseY - 160, 800, 192);
+				//System.out.println("oer 900");
 			}
 			g2.drawImage(s.faceImage, titlePos.x + 130, baseY - 160 , 128,96, null);
-			g2.drawImage(s.scoreImage, titlePos.x + 230, baseY - 130, s.scoreImage.getWidth() * 2, scores.get(0).scoreImage.getHeight() * 2, null);
+			g2.drawImage(s.scoreImage, titlePos.x + 180, baseY - 130, s.scoreImage.getWidth() * 2, scores.get(0).scoreImage.getHeight() * 2, null);
 
 			//draw the lower list
-			for(int i = 1; i < 10; i++){
+			for(int i = 1; i < scores.size(); i++){
 				s = scores.get(i);
 				if(s.newScore){
-					g2.setColor (new Color (254,243,140));
+					g2.setColor (new Color ((int)(Math.random()) * 255,(int)(Math.random() * 255),(int)(Math.random() * 255)));
 					g2.fillRect(0, baseY +  (60*i), 800, 48);
 				}
 				g2.drawImage(s.faceImage, titlePos.x + 130, baseY +  (60*i), 64,48, null);
-				g2.drawImage(s.scoreImage, titlePos.x + 230, baseY + (60*i), s.scoreImage.getWidth() * 2, s.scoreImage.getHeight() * 2, null);
+				g2.drawImage(s.scoreImage, titlePos.x + 180, baseY + (60*i), s.scoreImage.getWidth() * 2, s.scoreImage.getHeight() * 2, null);
+			}
 			}
 
 
@@ -189,16 +200,18 @@ public class HighScoreThread extends GameThread {
 		public int score = 0;
 		public BufferedImage scoreImage, faceImage;
 		public boolean newScore = false;
+		public long networkId = 0;
 		
 		public String file = "";
 
-		public ScoreItem(BufferedImage bufIn, int score){
+		public ScoreItem(BufferedImage bufIn, int score, String name){
 			this.score = score;
 			this.faceImage = bufIn;		
-			scoreImage = parent.fixedFont.getImageFromString("Urinal " + name + " " + score);
+			scoreImage = parent.fixedFont.getImageFromString("Player " + name + " " + score);
 			if(bufIn == null){
 				faceImage = resize(barnImage, 64,48);
 			}
+			networkId = System.currentTimeMillis();
 		}
 		
 		public void setImageFromFile(String in){

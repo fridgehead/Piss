@@ -19,8 +19,8 @@ public class TitleThread extends GameThread {
 
 	public TitleThread(Skeleton parent){
 		super(parent);
-		titleText = parent.fixedFont.getImageFromString("WEE WII");
-		pissToStartImage = parent.fixedFont.getImageFromString("Wee to start");
+		titleText = parent.fixedFont.getImageFromString("PEE PII");
+		pissToStartImage = parent.fixedFont.getImageFromString("Pee to start");
 		isReady = true;
 
 	}

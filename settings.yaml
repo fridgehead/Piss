@@ -1,3 +1,4 @@
 playerId: 1
 
 location: London
+serialport: /dev/tty.usbserial-A4007S2a

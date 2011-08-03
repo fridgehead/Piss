@@ -47,7 +47,7 @@ public class MainGameThread extends GameThread {
 	private long gameOverTime;
 
 
-	private JMyron jmyron;
+	//private JMyron jmyron;
 
 
 	public MainGameThread(Skeleton parent){
@@ -84,12 +84,12 @@ public class MainGameThread extends GameThread {
 		System.out.println();
 		screenTransform = new AffineTransform();
 
-		jmyron = new JMyron();
-		jmyron.start(640,480);
+		//jmyron = new JMyron();
+		//jmyron.start(640,480);
 
 	}
-	public void newScoreFromNetwork(String name, String location, int score){
-		parent.newScoreFromNetwork(name, location, score);
+	public void newScoreFromNetwork(String name, String location, int score, long randid){
+		parent.newScoreFromNetwork(name, location, score, randid);
 	}
 	
 	public void setOtherPlayerPos(int id, int xPos, int playerProgress){
@@ -303,7 +303,7 @@ public class MainGameThread extends GameThread {
 			player.draw(g2, camera);
 			//System.out.print(camera.toScreenPosition(player.worldPosition));
 
-			g2.setColor(new Color(200,200,200));
+			g2.setColor(new Color(255,255,255));
 			for(int i = 0; i < 7; i++){
 				g2.drawLine(50 + i * 100, 0, 50 + i * 100, 600);
 			}
@@ -329,7 +329,7 @@ public class MainGameThread extends GameThread {
 			}
 
 			if(gameOver){
-				drawCamera(g2);
+				//drawCamera(g2);
 				g2.drawImage(takePhotoText, 200, 300,takePhotoText.getWidth() * 2, takePhotoText.getHeight() * 2, null);
 			}
 			
@@ -359,12 +359,12 @@ public class MainGameThread extends GameThread {
 		levelData = levelNew;
 	}
 	
-	private void drawCamera(Graphics2D g2){
+	/*private void drawCamera(Graphics2D g2){
         jmyron.update();//update the camera view
         int[] img = jmyron.image(); //get the normal image of the camera
         bi.setRGB(0,0,640,480,img,0,640);
         g2.drawImage(bi, 280, 60, 320, 240, null);
-	}
+	}*/
 
 	
 
