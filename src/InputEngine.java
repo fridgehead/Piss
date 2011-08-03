@@ -54,6 +54,8 @@ public class InputEngine extends Thread implements SerialPortEventListener{
 	char dparity = 'N';
 	int ddatabits = 8;
 	int dstopbits = 1;
+	
+	long lastPissTime = 0;
 
 	public InputEngine(Skeleton parent){
 
@@ -148,7 +150,20 @@ public class InputEngine extends Thread implements SerialPortEventListener{
 		while(true){
 			while(running){
 				if(available() > 0){
-					System.out.println(read());
+					int i = read();
+					for (int b = 0; b < 7; b++){
+						if((i & 1 << b) > 0) {
+							System.out.println(i);
+							
+							sendEvent(i << 1);
+						}
+						
+					}
+					lastPissTime = System.currentTimeMillis();
+				}
+				
+				if(lastPissTime + 500 < System.currentTimeMillis()){
+					sendEvent(KEY_NOMOREPISS);
 				}
 			}
 		}

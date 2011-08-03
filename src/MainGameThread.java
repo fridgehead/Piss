@@ -53,7 +53,7 @@ public class MainGameThread extends GameThread {
 	public MainGameThread(Skeleton parent){
 		super(parent);
 		fasterText = parent.fixedFont.getImageFromString("<< SPEED INCREASE");
-		noMorePissText = parent.fixedFont.getImageFromString("PISS MORE");
+		noMorePissText = parent.fixedFont.getImageFromString("PEE MORE");
 		pissMoreTimer = parent.fixedFont.getImageFromString("5");
 		takePhotoText = parent.fixedFont.getImageFromString("GAME OVER");
 		progressText = parent.fixedFont.getImageFromString("SCORE " + playerProgress);
