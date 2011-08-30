@@ -28,7 +28,7 @@ public class MainGameThread extends GameThread {
 	long lastNetworkUpdate = 0;
 	Point[] stars = new Point[40];
 	Point[] backStars = new Point[40];
-	BufferedImage fasterText, progressText, noMorePissText, pissMoreTimer, takePhotoText;
+	BufferedImage fasterText, progressText, noMorePissText, pissMoreTimer, takePhotoText, otherShip;;
 	long fasterTextDisplayTime = 0;
 	long shakeTime = 0;
 	long playerDeathTimeOut = 0;
@@ -37,7 +37,7 @@ public class MainGameThread extends GameThread {
 	boolean outOfPiss = false, gameOver = false;;
 	long outOfPissTime = 0;
 	ArrayList<PlayerObject> otherPlayers = new ArrayList<PlayerObject>();
-
+long now;
 
 	int[] levelData = new int[400];
 
@@ -45,6 +45,12 @@ public class MainGameThread extends GameThread {
 	BufferedImage bi = new BufferedImage(640, 480, BufferedImage.TYPE_INT_ARGB);
 
 	private long gameOverTime;
+
+
+	private int currentLevelSegment;
+
+
+	private int shiftLevel;
 
 
 	//private JMyron jmyron;
@@ -57,6 +63,12 @@ public class MainGameThread extends GameThread {
 		pissMoreTimer = parent.fixedFont.getImageFromString("5");
 		takePhotoText = parent.fixedFont.getImageFromString("GAME OVER");
 		progressText = parent.fixedFont.getImageFromString("SCORE " + playerProgress);
+		try {
+			otherShip = ImageIO.read(new File("shipother.png"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		player = new PlayerObject(650, -500, parent.spriteBank.getSpriteByName("player"));
 		player.isActive = true;
 		player.setAnimation(0);
@@ -183,6 +195,7 @@ public class MainGameThread extends GameThread {
 
 	public void updateState(){	
 		super.updateState(); // needed for sound manager to trigger
+		now = System.currentTimeMillis();
 		player.think();
 		playerProgress += playerSpeed;
 		for(int i = 0; i < 40; i++){
@@ -280,8 +293,8 @@ public class MainGameThread extends GameThread {
 			}
 
 			//draw level
-			int currentLevelSegment = playerProgress / 200;
-			int shiftLevel = 0;
+			currentLevelSegment = playerProgress / 200;
+			shiftLevel = 0;
 			shiftLevel = ( playerProgress - (currentLevelSegment * 200)) / 2 - 100;
 			//System.out.println(shiftLevel);
 			g2.setColor(new Color(100,100,100));
@@ -308,8 +321,8 @@ public class MainGameThread extends GameThread {
 				g2.drawLine(50 + i * 100, 0, 50 + i * 100, 600);
 			}
 
-
-			if(fasterTextDisplayTime + 500 > System.currentTimeMillis()){
+/*
+			if(fasterTextDisplayTime + 500 > now){
 				AffineTransform f = g2.getTransform();
 				g2.translate(60,-180);
 				g2.rotate(Math.PI / 2);
@@ -317,12 +330,12 @@ public class MainGameThread extends GameThread {
 				g2.drawImage(fasterText, 0, 0, fasterText.getWidth() * 2, fasterText.getHeight() * 2, null);
 				g2.setTransform(f);
 
-			}
+			}*/
 			
 			g2.drawImage(progressText, 50, 50, null);
 
 			if(outOfPiss){
-				int timer = (int) ( 5 - (System.currentTimeMillis() - outOfPissTime) / 1000 );
+				int timer = (int) ( 5 - (now - outOfPissTime) / 1000 );
 				pissMoreTimer = parent.fixedFont.getImageFromString("" + timer);
 				g2.drawImage(pissMoreTimer, 150, 200,pissMoreTimer.getWidth() * 4, pissMoreTimer.getHeight() * 4, null);
 				g2.drawImage(noMorePissText,-100,100,noMorePissText.getWidth() * 4, noMorePissText.getHeight() * 4, null);
@@ -333,15 +346,15 @@ public class MainGameThread extends GameThread {
 				g2.drawImage(takePhotoText, 200, 300,takePhotoText.getWidth() * 2, takePhotoText.getHeight() * 2, null);
 			}
 			
-			if(lastNetworkUpdate + 50 < System.currentTimeMillis()){
+			if(lastNetworkUpdate + 50 < now){
 				parent.tcpClient.sendMessage(playerProgress + "," + player.worldPosition.x);
-				lastNetworkUpdate = System.currentTimeMillis();
+				lastNetworkUpdate = now;
 			}
 			
 			g2.setColor(new Color(0,255,0));
 			for(PlayerObject p : otherPlayers){
 				int yPos = playerProgress - p.playerProgress;
-				g2.fillRect(p.worldPosition.x, 500 + yPos, 50,50);
+				g2.drawImage(otherShip, p.worldPosition.x, 500 + yPos, 50,50,null);
 			}
 
 		}

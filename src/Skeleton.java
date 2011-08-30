@@ -46,6 +46,7 @@ public class Skeleton extends JFrame implements KeyListener {
 		Yaml yaml = new Yaml();			
 		InputStream input;
 		String portName = "";
+		String server = "127.0.0.1";
 		try {
 			input = new FileInputStream("settings.yaml");
 
@@ -56,6 +57,7 @@ public class Skeleton extends JFrame implements KeyListener {
 				playerId = ((Integer)(objMap.get("playerId"))).intValue();
 				location = (String)objMap.get("location");
 				portName = (String)objMap.get("serialport");
+				server = (String)objMap.get("server");
 			}	
 		} catch (Exception e){
 			e.printStackTrace();
@@ -97,7 +99,7 @@ public class Skeleton extends JFrame implements KeyListener {
 
 		
 		tcpClient = new TCPClient(playerId, mainThread);
-		tcpClient.connect("127.0.0.1", 4444);
+		tcpClient.connect(server, 4444);
 		
 		tcpClient.start();
 		//spawn off a gamestate thread

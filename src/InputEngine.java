@@ -153,25 +153,28 @@ public class InputEngine extends Thread implements SerialPortEventListener{
 			while(running){
 				if(available() > 0){
 					int i = read();
-					for (int b = 0; b < 7; b++){
-						int re = (i & 1 << b);
-						if(re > 0) {
-							if(lastControlMessage != i ){
 
-								System.out.println(i);
-								lastControlMessage = i ;
-								sendEvent(i );
-							}
+					if(i > 0){
+						for (int b = 0; b < 7; b++){
+							int re = i & (1 << b);
+
+							//if(re == 0) {
+								if(lastControlMessage != i ){
+									//System.out.println(re);
+
+									lastControlMessage =  re ;
+									sendEvent(re);
+									lastPissTime = System.currentTimeMillis();
+								}
+							//}
+
 						}
-
 					}
 					
-					if(i != 0 ){
-						lastPissTime = System.currentTimeMillis();
-					}
+
 				}
 
-				if(lastPissTime + 100000 < System.currentTimeMillis()){
+				if(lastPissTime + 1000 < System.currentTimeMillis()){
 					sendEvent(KEY_NOMOREPISS);
 				}
 			}
@@ -188,22 +191,22 @@ public class InputEngine extends Thread implements SerialPortEventListener{
 		break;
 		case(50):	//up
 			keyMask |= KEY_TRACK1;lastPissTime = System.currentTimeMillis();
-		break;
+			break;
 		case(51):	//up
 			keyMask |= KEY_TRACK2;lastPissTime = System.currentTimeMillis();
-		break;
+			break;
 		case(52):	//up
 			keyMask |= KEY_TRACK3;lastPissTime = System.currentTimeMillis();
-		break;
+			break;
 		case(53):	//A
 			keyMask |= KEY_TRACK4;lastPissTime = System.currentTimeMillis();
-		break;
+			break;
 		case(54):	//B
 			keyMask |= KEY_TRACK5;lastPissTime = System.currentTimeMillis();
-		break;
+			break;
 		case(55):	//COIN
 			keyMask |= KEY_TRACK6;lastPissTime = System.currentTimeMillis();
-		break;
+			break;
 		case(27):
 			sendEvent(KEY_ESC);
 		break;
